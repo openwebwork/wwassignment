@@ -97,9 +97,9 @@ print("<p style='font-size: smaller; color: #aaa;'>" . get_string("iframeNoShow-
       . "<a href='$wwsetlink'>" . get_string("iframeNoShow-2", "wwassignment")
       ."</a><p align='center'></iframe></p>\n"
       );
-print("<iframe id='wwPage' src='$wwsetlink' frameborder='1' "
+print("<iframe id='wwPage' src='$wwsetlink' frameborder='0' "
       . "width='".$CFG->wwassignment_iframewidth."' "
-      . "height='".$CFG->wwassignment_iframeheight."'>"
+      . "height='".$CFG->wwassignment_iframeheight."' scrolling='no' >"
       );
 
 $context = get_context_instance(CONTEXT_COURSE, $course->id);

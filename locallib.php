@@ -4,6 +4,7 @@ global $CFG,$DB;
 require_once("$CFG->libdir/soaplib.php");
 
 define('WWASSIGNMENT_DEBUG',0);
+// define('WWASSIGNMENT_DEBUG',1);
 
 
 //////////////////////////////////////////////////////////////////
@@ -99,12 +100,13 @@ function _wwassignment_create_events($wwassignment,$wwsetdata ) {
     }
     $courseid = $wwassignment->course;
 
-    if (!courseid) {
+    if (!$courseid) {
     	$courseid =$COURSE->id;
     }
      
 
     unset($event);
+    $event = new \stdClass();
     $event->name = $name;
     $event->description = 'WeBWorK Set Event';
     $event->courseid = $courseid;
@@ -120,7 +122,10 @@ function _wwassignment_create_events($wwassignment,$wwsetdata ) {
 
     // error_log("adding a due event");
     $result = 0;
-    $calendareventid = add_event($event);
+    // $calendareventid = add_event($event); //calendar_event::create($event);//
+    global $CFG;
+    require_once("$CFG->dirroot/calendar/lib.php");
+    $calendareventid = calendar_event::create($event);
 //    error_log("calendareventid $calendareventid created");
     if(!$calendareventid) {
 //        error_log("can't create calendarevent for set $wwsetname wwid $wwassignmentid date $opendate $duedate course $courseid");

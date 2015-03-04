@@ -2,7 +2,8 @@
 
 
 require_once($CFG->dirroot.'/mod/wwassignment/lib.php');
-
+// Messages d'erreur
+global $CFG;
    
 
 $settings->add(new admin_setting_configtext('wwassignment_webworkurl', 

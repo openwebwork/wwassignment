@@ -56,7 +56,7 @@ class mod_wwassignment_mod_form extends moodleform_mod {
         $mform->addHelpButton('webwork_set', 'webwork_set', 'wwassignment');
         
         //description
-        $mform->addElement('htmleditor', 'description', get_string('description', 'assignment'));
+        $mform->addElement('htmleditor', 'description', get_string('description', 'assign'));
         $mform->setType('description', PARAM_RAW);
         $mform->addHelpButton('description', 'writing', 'wwassignment');
         

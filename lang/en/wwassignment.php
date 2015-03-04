@@ -75,7 +75,8 @@ $string['webwork_set_map_failure'] = 'No WeBWorK problem set is mapped to the cu
 $string['webwork_user_map_failure'] = 'No WeBWorK user is mapped to the current Moodle user.';
 $string['webwork_user_set_map_failure'] = 'The WeBWorK user does not have the current Moodle set assigned.';
 $string['rpc_error'] = 'Communication error between the Moodle client and WeBWorK server.';
-
+$string['writing'] = 'WWASSIGN:writing';
+$string['writing_help'] = 'WWASSIGN:writing_help';
 
 
 ?>

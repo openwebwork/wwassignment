@@ -106,7 +106,7 @@ print("<p style='font-size: smaller; color: #aaa;'>" . get_string("iframeNoShow-
       );
 print("<iframe id='wwPage' src='$wwsetlink' frameborder='0' "
       . "width='".$CFG->wwassignment_iframewidth."' "
-      . "height='".$CFG->wwassignment_iframeheight."' scrolling='no' >"
+      . "height='".$CFG->wwassignment_iframeheight."'>"
       );
 
 

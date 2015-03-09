@@ -27,7 +27,7 @@ function xmldb_wwassignment_upgrade($oldversion) {
 
     // I've used the version I got: 2015022101 .
 
-    if ($oldversion < 2015022101){
+    if ($oldversion < 2015030906){
         $table = new xmldb_table('wwassignment');
         // TODO: Validate if existing wwassignments have mostly a html description to use 1 at
         // add_field time

@@ -43,7 +43,7 @@ if($id) {
 }
 
 //catch the guests
-global $USER;
+global $USER, $OUTPUT;
 if($USER->username == 'guest') {  # this allows guests to view webwork (signed in as user guest)
     #FIXME  -- replace this with a method that uses the automatic guest sign in on webwork.
     // print_error('Guests cannot view WeBWorK Problem Sets');
@@ -65,7 +65,8 @@ $PAGE->set_heading("$course->fullname");
 $PAGE->set_title("$course->shortname: $wwassignment->name");
 $PAGE->set_cacheable(true);
 $PAGE->set_focuscontrol("");
-$PAGE->set_button(update_module_button($cm->id, $course->id, $strwwassignment));
+//$PAGE->set_button(update_module_button($cm->id, $course->id, $strwwassignment));
+$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'wwassignment'));
 //$PAGE->navbar->add($strwwassignments,"index.php?id=$course->id");
 //$PAGE->navbar->add($wwassignment->name);
 

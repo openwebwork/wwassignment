@@ -25,11 +25,13 @@ function xmldb_wwassignment_upgrade($oldversion) {
 
     $dbman = $DB->get_manager(); /// loads ddl manager and xmldb classes
 
-    // I've used the version I got: 2014022101 .
+    // I've used the version I got: 2015022101 .
 
-    if ($oldversion < 2015030906){
+    if ($oldversion < 2015022101){
         $table = new xmldb_table('wwassignment');
-        $field = new xmldb_field('introformat', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'description');
+        // TODO: Validate if existing wwassignments have mostly a html description to use 1 at
+        // add_field time
+        $field = new xmldb_field('introformat', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0', 'description');
 
         // Add introformat.
         if (!$dbman->field_exists($table, $field)) {

@@ -17,11 +17,35 @@
 // The commands in here will all be database-neutral,
 // using the functions defined in lib/ddllib.ph
 
-function xmldb_wwassignment_upgrade($oldversion=0) {
+defined('MOODLE_INTERNAL') || die();
 
-    global $CFG, $DB, $THEME;
+function xmldb_wwassignment_upgrade($oldversion) {
+
+    global $CFG, $DB;
 
     $dbman = $DB->get_manager(); /// loads ddl manager and xmldb classes
+
+    // I've used the version I got: 2014022101 .
+
+    if ($oldversion < 2015030906){
+        $table = new xmldb_table('wwassignment');
+        $field = new xmldb_field('introformat', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'description');
+
+        // Add introformat.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+
+        // Change description into intro
+        $field = new xmldb_field('description', XMLDB_TYPE_TEXT);
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'intro');
+        }
+
+        // save upgrade point
+	    upgrade_mod_savepoint(true, 2015030906, 'wwassignment');
+    }
 
 
 /// And upgrade begins here. For each one, you'll need one 

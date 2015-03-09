@@ -30,6 +30,8 @@ $settings->add(new admin_setting_configtext('wwassignment_rpc_key',
                            50  // size of blank -- default is 30
 ));
 
+
+
 $settings->add(new admin_setting_configtext('wwassignment_iframewidth', 
                            get_string('iframe_width','wwassignment'),
                            get_string('iframe_width_desc','wwassignment'),
@@ -45,6 +47,7 @@ $settings->add(new admin_setting_configtext('wwassignment_iframeheight',
                            30  // size of blank -- default is 30        
 ));
 
-
+$settings->add(new admin_setting_configcheckbox('wwassignment/requiremodintro',
+    get_string('requiremodintro', 'admin'), get_string('configrequiremodintro', 'admin'), 0));
 
 ?>

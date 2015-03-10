@@ -167,10 +167,10 @@ function wwassignment_delete_instance($wwassignmentid) {
 
     /** gradebook upgrades
     * add xxx_update_grades() function into mod/xxx/lib.php
-Ê Ê * add xxx_grade_item_update() function into mod/xxx/lib.php
-Ê Ê * patch xxx_update_instance(),  xxx_insert_instance()? xxx_add_instance() and xxx_delete_instance() to call xxx_grade_item_update()
-Ê Ê * patch all places of code that change grade values to call xxx_update_grades()
-Ê Ê * patch code that displays grades to students to use final grades from the gradebookÊ
+ï¿½ ï¿½ * add xxx_grade_item_update() function into mod/xxx/lib.php
+ï¿½ ï¿½ * patch xxx_update_instance(),  xxx_insert_instance()? xxx_add_instance() and xxx_delete_instance() to call xxx_grade_item_update()
+ï¿½ ï¿½ * patch all places of code that change grade values to call xxx_update_grades()
+ï¿½ ï¿½ * patch code that displays grades to students to use final grades from the gradebookï¿½
     **/
     
 
@@ -723,6 +723,34 @@ function wwassignment_supports($feature) {
 	
       default: return null;
     }
+}
+
+
+/**
+ * Given a coursemodule object, this function returns the extra
+ * information needed to print this activity in various places.
+ *
+ * If folder needs to be displayed inline we store additional information
+ * in customdata, so functions {@link folder_cm_info_dynamic()} and
+ * {@link folder_cm_info_view()} do not need to do DB queries
+ *
+ * @param cm_info $cm
+ * @return cached_cm_info info
+ */
+function wwassignment_get_coursemodule_info($cm) {
+    global $DB;
+    if (!($wwassign = $DB->get_record('wwassignment', array('id' => $cm->instance),
+        'id, name, webwork_set, grade, intro, introformat'))) {
+        return NULL;
+    }
+    $cminfo = new cached_cm_info();
+    $cminfo->name = $wwassign->name;
+    if ($cm->showdescription && strlen(trim($wwassign->intro))) {
+        // Convert intro to html. Do not filter cached version, filters run at display time.
+        $cminfo->content = format_module_intro('wwassignment', $wwassign, $cm->id, false);
+    }
+
+    return $cminfo;
 }
 
 ?>

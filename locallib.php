@@ -141,11 +141,15 @@ function _wwassignment_create_events($wwassignment,$wwsetdata ) {
 * @return integer 0 on success
 */
 function _wwassignment_delete_events($wwassignmentid) {
-    global $DB;
+    global $DB, $CFG;
     if ($events = $DB->get_records_select('event', "modulename = 'wwassignment' and instance = '$wwassignmentid'")) {
         foreach($events as $event) {
                // error_log("deleting  event ".$event->id);
-            delete_event($event->id);
+            require_once("$CFG->dirroot/calendar/lib.php");
+            $calEvent = new calendar_event($event);
+            $calEvent->delete(true);
+            //delete_event($event->id);
+
         }
     }
     return 0;

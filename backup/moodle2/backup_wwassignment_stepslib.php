@@ -38,7 +38,7 @@ class backup_wwassignment_activity_structure_step extends backup_activity_struct
 
         // Define each element separated
         $wwassignment = new backup_nested_element('wwassignment', array('id','course'), array(
-            'name', 'description', 'webwork_set', 'grade', 'timemodified'));
+            'name', 'intro', 'introformat', 'webwork_set', 'grade', 'timemodified'));
 
         // Define sources
         $wwassignment->set_source_table('wwassignment', array('id' => backup::VAR_ACTIVITYID, 'course'=>backup::VAR_COURSEID));

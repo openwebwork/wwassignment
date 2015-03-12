@@ -24,16 +24,17 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('wwassignment_webworkurl',
         get_string('webwork_url', 'wwassignment'),
         get_string('webwork_url_desc', 'wwassignment'),
-        'https://test.edu/webwork2',  // size of blank -- default is 30
+        'https://test.edu/webwork2',
         PARAM_URL
     ));
 
     $settings->add(new admin_setting_configtext('wwassignment_rpc_wsdl',
         get_string('rpc_wsdl', 'wwassignment'),
         get_string('rpc_wsdl_desc', 'wwassignment'),
-        50 , // size of blank -- default is 30
-        PARAM_INT
+        'https://test.edu/webwork2_wsdl',
+        PARAM_URL
     ));
+
     $settings->add(new admin_setting_configtext('wwassignment_rpc_key',
         get_string('rpc_key', 'wwassignment'),
         get_string('rpc_key_desc', 'wwassignment'),
@@ -42,18 +43,18 @@ if ($ADMIN->fulltree) {
 
     ));
 
-
     $settings->add(new admin_setting_configtext('wwassignment_iframewidth',
         get_string('iframe_width', 'wwassignment'),
         get_string('iframe_width_desc', 'wwassignment'),
-        800,
-        PARAM_INT
+        '95%',
+        PARAM_RAW_TRIMMED
     ));
+
     $settings->add(new admin_setting_configtext('wwassignment_iframeheight',
         get_string('iframe_height', 'wwassignment'),
         get_string('iframe_height_desc', 'wwassignment'),
-        500,
-        PARAM_INT
+        '500px',
+        PARAM_RAW_TRIMMED
     ));
 
     $settings->add(new admin_setting_configcheckbox('wwassignment/requiremodintro',

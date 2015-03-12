@@ -53,7 +53,7 @@ class restore_wwassignment_activity_task extends restore_activity_task {
      */
     static public function define_decode_contents() {
         $contents = array();
-        $contents[] = new restore_decode_content('wwassignment', array('description'), 'wwassignment');  // jdd?
+        $contents[] = new restore_decode_content('wwassignment', array('intro'), 'wwassignment');  // jdd?
         return $contents;
     }
 

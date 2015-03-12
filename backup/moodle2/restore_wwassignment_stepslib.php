@@ -16,12 +16,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package moodlecore
+ * @package mod_wwassignment
  * @subpackage backup-moodle2
- * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @copyright 2015
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die;
 /**
  * Define all the restore steps that will be used by the restore_choice_activity_task
  */
@@ -60,6 +61,6 @@ class restore_wwassignment_activity_structure_step extends restore_activity_stru
 
     protected function after_execute() {
         // Add choice related files, no need to match by itemname (just internally handled context)
-//        $this->add_related_files('mod_choice', 'intro', null);
+        $this->add_related_files('mod_wwassignment', 'intro', null);
     }
 }

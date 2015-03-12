@@ -16,14 +16,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package moodlecore
+ * @package mod_wwassignement
  * @subpackage backup-moodle2
- * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @copyright 2014
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die;
+
 require_once($CFG->dirroot . '/mod/wwassignment/backup/moodle2/backup_wwassignment_stepslib.php'); // Because it exists (must)
-require_once($CFG->dirroot . '/mod/wwassignment/backup/moodle2/backup_wwassignment_settingslib.php'); // Because it exists (optional)
 
 /**
  * choice backup task that provides all the settings and steps to perform one

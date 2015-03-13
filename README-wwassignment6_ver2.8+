@@ -9,8 +9,8 @@ WeBWorK 2.8.3+.
 The update that allows these modules to work with Moodle 2.0
 were done by Jonathan Duncan, Professor of Mathematics at Walla Walla University.
 http://math.wallawalla.edu/~duncjo/
-With further work by Michael Gage http://www.math.rochester.edu/
-
+With further work by Michael Gage http://www.math.rochester.edu/ and 
+Nelson Moller of Cégep@distance. 
 To install
 (1) cd moodle/blocks
     git clone https://github.com/mgage/wwlink.git

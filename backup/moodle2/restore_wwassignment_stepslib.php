@@ -48,6 +48,11 @@ class restore_wwassignment_activity_structure_step extends restore_activity_stru
         $data = (object)$data;
         $oldid = $data->id;
         $data->course = $this->get_courseid();
+        if (isset($data->description)){
+            $data->intro = $data->description;
+            $data->introformat = 1;
+            unset($data->description);
+        }
 
 //        $data->timeopen = $this->apply_date_offset($data->timeopen);
 //        $data->timeclose = $this->apply_date_offset($data->timeclose);

@@ -38,13 +38,15 @@ class backup_wwassignment_activity_structure_step extends backup_activity_struct
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated
-        $wwassignment = new backup_nested_element('wwassignment', array('id','course'), array(
-            'name',
-            'intro',
-            'introformat',
-            'webwork_set',
-            'grade', '
-            timemodified')
+        $wwassignment = new backup_nested_element('wwassignment', array('id','course'),
+            array(
+                'name',
+                'intro',
+                'introformat',
+                'webwork_set',
+                'grade',
+                'timemodified'
+            )
         );
 
         // Define sources

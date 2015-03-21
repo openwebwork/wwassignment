@@ -16,12 +16,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package moodlecore
+ * @package mod_wwassignment
  * @subpackage backup-moodle2
- * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @copyright 2015
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die;
 /**
  * Define all the backup steps that will be used by the backup_choice_activity_task
  */
@@ -37,8 +38,16 @@ class backup_wwassignment_activity_structure_step extends backup_activity_struct
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated
-        $wwassignment = new backup_nested_element('wwassignment', array('id','course'), array(
-            'name', 'description', 'webwork_set', 'grade', 'timemodified'));
+        $wwassignment = new backup_nested_element('wwassignment', array('id','course'),
+            array(
+                'name',
+                'intro',
+                'introformat',
+                'webwork_set',
+                'grade',
+                'timemodified'
+            )
+        );
 
         // Define sources
         $wwassignment->set_source_table('wwassignment', array('id' => backup::VAR_ACTIVITYID, 'course'=>backup::VAR_COURSEID));

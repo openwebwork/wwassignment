@@ -16,9 +16,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package moodlecore
+ * @package mod_wwassignment
  * @subpackage backup-moodle2
- * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @copyright 2015
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -53,7 +53,7 @@ class restore_wwassignment_activity_task extends restore_activity_task {
      */
     static public function define_decode_contents() {
         $contents = array();
-        $contents[] = new restore_decode_content('wwassignment', array('description'), 'wwassignment');  // jdd?
+        $contents[] = new restore_decode_content('wwassignment', array('intro'), 'wwassignment');  // jdd?
         return $contents;
     }
 

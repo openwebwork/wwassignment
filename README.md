@@ -1,10 +1,13 @@
 # wwassignment
 ## Moodle WeBWorK assignment activity module
 
+**wwassignment** and **wwlink** provide a reliable method of presenting introductory and 
+advanced mathematics assignments through the Moodle LMS.  
+
 This repository contains a branch that works with Moodle 1.9.8, the last of the Moodle 1.x versions, 
 as well as a branch that works with  Moodle 2.8.x versions including at this writing version 2.8.5.  
 
-The original version of this software "wwmoodle" was written by Peter Snoblin 
+The original version of this software "wwmoodle" was written by Peter Snoblin at Truman State University
 in 2005 to connect WeBWorK1 and Moodle 1.  Additional development during 2006 and 2007 
 by Michael Gage and then by Matt Leventi at the University of Rochester 
 produced a robust connection between evolving versions of Moodle1 and WeBWorK2. 
@@ -18,9 +21,6 @@ modules removing spurious error messages, modifying the backup code and
 making adjustments so that these modules now work well with the latest version of Moodle 2.8.5.
 The original "wwmoodle" repository has been split into "wwassignment" and "wwlink" so 
 that they are easier to install.
-
-wwassignment and wwlink provide a reliable method of presenting introductory and 
-advanced mathematics assignments through the Moodle LMS.  
 
 Quick install wwlink:
 1. cd moodle/blocks

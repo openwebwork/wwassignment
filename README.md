@@ -23,10 +23,11 @@ The original "wwmoodle" repository has been split into "wwassignment" and "wwlin
 that they are easier to install.
 
 Quick install **wwlink**:
+
 1. cd moodle/blocks
 2. git clone https://github.com/openwebwork/wwassignment.git
 
-Quick install wwassignment:
+Quick install **wwassignment**:
 
 1. cd moodle/mod
 2. git clone https://github.com/openwebwork/wwlink.git

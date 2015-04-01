@@ -37,7 +37,7 @@ For most installations you will want to use the default branch which is ver2.8+
 A moodle administrator will need to log in to Moodle from the web in order to activate the two modules and 
 to configure the wwassignment preferences so that it points to a local webwork server. 
 
-For more details see the file INSTALL and CONFIGURE which also 
+For more details see the file "INSTALL and CONFIGURE" which also 
 describes how to enable the WeBWorK webservice at the WeBWorK installation.
 
 Finally there is much expertise and support for using moodle and webwork together on the 

@@ -17,7 +17,7 @@ these modules to continue to work with Moodle 2.0.
 (This is essentially the ver2.6+ branch of this repository.) 
 
 Most recently (2014-2015) Michael Gage with help from  Nelson Moller (Cégep à Distance) have overhauled the 
-modules removing spurious error messages, modifying the backup code and 
+modules, removing spurious error messages, modifying the backup code and 
 making adjustments so that these modules now work well with the latest version of Moodle 2.8.5.
 The original "wwmoodle" repository has been split into "wwassignment" and "wwlink" so 
 that they are easier to install.

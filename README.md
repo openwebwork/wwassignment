@@ -40,7 +40,7 @@ to configure the wwassignment preferences so that it points to a local webwork s
 For more details see the file "INSTALL and CONFIGURE" which also 
 describes how to enable the WeBWorK webservice at the WeBWorK installation.
 
-Finally there is much expertise and support for using moodle and webwork together on the 
+Finally there is much expertise and support for using Moodle and WeBWorK together on the 
 forum.
 
 http://webwork.maa.org/moodle/mod/forum/index.php?id=3

@@ -51,7 +51,7 @@ Quick install **wwassignment**:
 9. If you wish to modify assignment dates you need to edit the WeBWorK Problem Set link and use the links "Go to WeBWorK instructor tools" or "Modify Set" to sign in to the WeBWorK site. (You need instructor privileges and may need to use the profa/profa login/password if you are using the test site.)
 10. Grades from WeBWorK homework are automatically entered into the moodle grade book whenever the Moodle cron job is run.
 11. Further details on working with WeBWorK are beyond the scope of these instructions.  For more help:
-    a. See the webwork wiki http://webwork.maa.org/wiki in general, 
-	b. See http://webwork.maa.org/wiki/Homework_Sets specifically 
-	c. Search other pages in the wiki with the search bar.
-	d. Ask questions on the **WeBWorK forum** linked to from the left margin of the wiki pages. 
+    1. See the webwork wiki http://webwork.maa.org/wiki in general, 
+    2. See http://webwork.maa.org/wiki/Homework_Sets specifically 
+    3. Search other pages in the wiki with the search bar.
+    4. Ask questions on the **WeBWorK forum** linked to from the left margin of the wiki pages. 

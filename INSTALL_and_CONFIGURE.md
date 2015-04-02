@@ -97,3 +97,33 @@ When the WeBWorK site is initially set up it may not have its webservice capabil
  </Location>
 
 ```
+* If you are using earlier versions of apache2  then you should use the config file `webwork.apache2-config` and uncomment the following stanzas
+
+```
+####################################################################
+# WebworkSOAP handlers (for integration with moodle)
+####################################################################
+ PerlModule WebworkSOAP
+
+ # WEBWORK SOAP CONFIGURATION
+ <Location /webwork2_rpc>
+         PerlHandler Apache2::SOAP
+         SetHandler perl-script
+         PerlSetVar dispatch_to "WebworkSOAP"
+         PerlSetVar options "compress_threshold => 10000"
+         Order Allow,Deny
+         Allow from All
+ </Location>
+
+####################################################################
+# WebworkSOAP WSDL HANDLER :: TO BE REPLACED WITH A FILE FOR PRODUCTION SERVERS
+####################################################################
+ <Location /webwork2_wsdl>
+         PerlSetVar dispatch_to "WebworkSOAP::WSDL"
+         PerlSetVar options "compress_threshold => 10000"
+         PerlHandler WebworkSOAP::WSDL
+         SetHandler perl-script
+         Order Allow,Deny
+         Allow from All
+ </Location>
+ ```

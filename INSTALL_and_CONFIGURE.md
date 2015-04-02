@@ -57,19 +57,26 @@ Quick install **wwassignment**:
     4. Ask questions on the **WeBWorK forum** linked to from the left margin of the wiki pages. 
 
 
-```
+
 ### Enabling the WeBWorK server
 
 Installation of the WeBWorK software is beyond the scope of this document.  You can
-use the install script https://github.com/openwebwork ww_install in many cases, particularly if you are installing on a machine from scratch.  For more information search the  WeBWorK wiki http://webwork.maa.org/wiki  for the term "install".
+use the install script https://github.com/openwebwork ww_install in many cases, 
+particularly if you are installing on a machine from scratch.  
+For more information search the  WeBWorK wiki http://webwork.maa.org/wiki  for the term "install".
 
-When the WeBWorK site is initially set up it may not have its webservice capability turned on. To turn them on we need to make adjustments to the configuration files in the directory  .../webwork2/conf. The files that end in .dist are distribution files which are not active, e.g  `webwork.apache2.4-config.dist`.  To make this configuration file active copy it to `webwork.apache2.4-config`.  
+When the WeBWorK site is initially set up it may not have its webservice 
+capability turned on. To turn them on we need to make adjustments to the 
+configuration files in the directory  `.../webwork2/conf`. The files that 
+end in .dist are distribution files which are not active, 
+e.g  `webwork.apache2.4-config.dist`.  To make this configuration 
+file active copy it to `webwork.apache2.4-config`.  
 
 * If you are using apache2.4 or later then you should use the configuration file `webwork.apache2.4-config`.  
 * Uncomment the following stanzas to enable the SOAP interface which connects WeBWorK and Moodle.
 
   
-
+```
 ####################################################################
 # WebworkSOAP handlers (for integration with moodle)
 ####################################################################

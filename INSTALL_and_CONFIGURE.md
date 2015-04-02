@@ -55,3 +55,82 @@ Quick install **wwassignment**:
     2. See http://webwork.maa.org/wiki/Homework_Sets specifically 
     3. Search other pages in the wiki with the search bar.
     4. Ask questions on the **WeBWorK forum** linked to from the left margin of the wiki pages. 
+
+
+
+### Enabling the WeBWorK server
+
+Installation of the WeBWorK software is beyond the scope of this document.  You can
+use the install script https://github.com/openwebwork ww_install in many cases, 
+particularly if you are installing on a machine from scratch.  
+For more information search the  WeBWorK wiki http://webwork.maa.org/wiki  for the term "install".
+
+When the WeBWorK site is initially set up it may not have its webservice 
+capability turned on. To turn them on we need to make adjustments to the 
+configuration files in the directory  `.../webwork2/conf`. The files that 
+end in .dist are distribution files which are not active, 
+e.g  `webwork.apache2.4-config.dist`.  To make this configuration 
+file active copy it to `webwork.apache2.4-config`.  
+
+* If you are using apache2.4 or later then you should use the configuration file `webwork.apache2.4-config`.  
+* Uncomment the following stanzas to enable the SOAP interface which connects WeBWorK and Moodle.
+
+  
+```
+####################################################################
+# WebworkSOAP handlers (for integration with moodle)
+####################################################################
+
+ PerlModule WebworkSOAP
+
+ # WEBWORK SOAP CONFIGURATION
+ <Location /webwork2_rpc>
+         PerlHandler Apache::SOAP
+         SetHandler perl-script
+         PerlSetVar dispatch_to "WebworkSOAP"
+         PerlSetVar options "compress_threshold => 10000"
+         Require all granted
+ </Location>
+
+####################################################################
+# WebworkSOAP WSDL HANDLER :: TO BE REPLACED WITH A FILE FOR PRODUCTION SERVERS
+####################################################################
+ <Location /webwork2_wsdl>
+         PerlSetVar dispatch_to "WebworkSOAP::WSDL"
+         PerlSetVar options "compress_threshold => 10000"
+         PerlHandler WebworkSOAP::WSDL
+         SetHandler perl-script
+         Require all granted
+ </Location>
+
+```
+* If you are using earlier versions of apache2  then you should use the config file `webwork.apache2-config` and uncomment the following stanzas
+
+```
+####################################################################
+# WebworkSOAP handlers (for integration with moodle)
+####################################################################
+ PerlModule WebworkSOAP
+
+ # WEBWORK SOAP CONFIGURATION
+ <Location /webwork2_rpc>
+         PerlHandler Apache2::SOAP
+         SetHandler perl-script
+         PerlSetVar dispatch_to "WebworkSOAP"
+         PerlSetVar options "compress_threshold => 10000"
+         Order Allow,Deny
+         Allow from All
+ </Location>
+
+####################################################################
+# WebworkSOAP WSDL HANDLER :: TO BE REPLACED WITH A FILE FOR PRODUCTION SERVERS
+####################################################################
+ <Location /webwork2_wsdl>
+         PerlSetVar dispatch_to "WebworkSOAP::WSDL"
+         PerlSetVar options "compress_threshold => 10000"
+         PerlHandler WebworkSOAP::WSDL
+         SetHandler perl-script
+         Order Allow,Deny
+         Allow from All
+ </Location>
+ ```

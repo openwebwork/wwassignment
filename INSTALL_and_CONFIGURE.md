@@ -21,9 +21,8 @@ Quick install **wwassignment**:
 3. Go to Site administration-> Plugins -> Activity modules -> WeBWorK Administration
 4. Fill in the form as shown below.  You can use the hosted2.webwork.rochester.edu site to test the initial installation but it is not a good idea to use it for production work.  It is a development machine and it may be taken off line or it's software may be changed drastically and without warning.
 5. The full URLs for the test site are
-
-	a. WeBWorK server URL: https://hosted2.webwork.rochester.edu/webwork2
-	b. URL for WeBWorK server WSDL file: https://hosted2.webwork.rochester.edu/webwork2_wsdl 
+  a. WeBWorK server URL: https://hosted2.webwork.rochester.edu/webwork2
+  b. URL for WeBWorK server WSDL file: https://hosted2.webwork.rochester.edu/webwork2_wsdl 
 6. You can test whether a server is up and running by typing the WSDL url into a browser window. A large XML file should be returned which defines the SOAP interface of the server.
 
 <img src="Moodle_WeBWorK_configuration.png">

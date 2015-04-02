@@ -19,7 +19,7 @@ Quick install **wwassignment**:
 1. Log in as a site administrator
 2. From Site administration -> Notification update the database to include the new module **wwassignment** and the new block **wwlink**
 3. Go to Site administration-> Plugins -> Activity modules -> WeBWorK Administration
-4. Fill in the form as shown below.  You can use the hosted2.webwork.rochester.edu site to test the initial installation but it is not a good idea to use it for production work.  It is a development machine and it may be taken off line or it's software may be changed drastically and without warning.
+4. Fill in the form as shown below.  You can use the http://hosted2.webwork.rochester.edu site to test the initial installation but it is not a good idea to use it for production work.  It is a development machine and it may be taken off line or its software may be changed drastically and without warning.
 5. The full URLs for the test site are
   1. WeBWorK server URL: https://hosted2.webwork.rochester.edu/webwork2
   2. URL for WeBWorK server WSDL file: https://hosted2.webwork.rochester.edu/webwork2_wsdl 

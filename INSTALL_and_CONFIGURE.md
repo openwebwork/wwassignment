@@ -16,9 +16,12 @@ Quick install **wwassignment**:
 #### Alternative branches/versions
 The directions above download the latest branch (ver2.8+) of these repositories which works well with the latest versions of Moodle 2.x.    If you wish to use wwassignment and wwlink with Moodle 1.9.x do the following in the wwassignment directory
 
-    * git fetch    # accesses the additional branches of the repository
-    * git branch -t ver1.9.8  origin/ver1.9.8   # creates a local version of the 1.9.8 branch
-    * git checkout ver1.9.8    # switch to using the ver1.9.8 branch 
+    * git fetch    
+    # accesses the additional branches of the repository
+    * git branch -t ver1.9.8  origin/ver1.9.8   
+    # creates a local version of the 1.9.8 branch
+    * git checkout ver1.9.8    
+    # switch to using the ver1.9.8 branch 
 
 ### Moodle site configuration
 

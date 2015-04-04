@@ -23,7 +23,7 @@ The directions above download the latest branch (ver2.8+) of these repositories 
     * git checkout ver1.9.8    
     # switch to using the ver1.9.8 branch 
     
-Do the same in the wwlink directory.
+    Do the same in the wwlink directory.
 
 ### Moodle site configuration
 

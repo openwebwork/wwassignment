@@ -7,12 +7,12 @@ Iinstallation of the moodle modules is very quick:
 Quick install **wwlink**:
 
 1. cd moodle/blocks
-2. git clone https://github.com/openwebwork/wwassignment.git
+2. git clone https://github.com/openwebwork/wwlink.git
 
 Quick install **wwassignment**:
 
 1. cd moodle/mod
-2. git clone https://github.com/openwebwork/wwlink.git
+2. git clone https://github.com/openwebwork/wwassignment.git
 #### Alternative branches/versions
 The directions above download the latest branch (ver2.8+) of these repositories which works well with the latest versions of Moodle 2.x.    If you wish to use wwassignment and wwlink with Moodle 1.9.x do the following in the wwassignment directory
 
@@ -145,3 +145,5 @@ file active copy it to `webwork.apache2.4-config`.
          Allow from All
  </Location>
  ```
+ ```
+* Usually the perl handler should  be Apache::SOAP -- but if that doesn't work try Apache2::SOAP.  (The typical error message in your log file looks something like: `Illegal field name 'APR::Table=HASH(0x7f8153848ea8)' at /usr/share/perl5/vendor_perl/SOAP/Transport/HTTP2.pm `) If neither works ask a question on the forum and include the error message.  There a different versions of perl and of the SOAP modules and they don't always work well with each other. 

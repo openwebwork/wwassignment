@@ -1,4 +1,5 @@
 # wwassignment
+## Active development of this Moodle module has moved to wwassignment on https://github.com/openwebwork
 ## Moodle WeBWorK assignment activity module
 
 **wwassignment** and **wwlink** provide a reliable method of presenting introductory and 

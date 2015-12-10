@@ -1,13 +1,32 @@
 <?php
-// $Id: version.php,v 1.3 2008/10/03 13:20:51 gage Exp $
-/////////////////////////////////////////////////////////////////////////////////
-///  Code fragment to define the version of wwassignment
-///  This fragment is called by moodle_needs_upgrading() and /admin/index.php
-/////////////////////////////////////////////////////////////////////////////////
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Version information for the wwassignment type.
+ *
+ * @package   wwassignment
+ * @copyright 2006--2015 Michael E. Gage
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-// 2.8+
+// 3.0+
 defined('MOODLE_INTERNAL') || die();
-$module->version  = 2015030906;  // The current module version (Date: YYYYMMDDXX)
+$plugin->version   = 2015030916;  // The current module version (Date: YYYYMMDDXX)
 $plugin->requires  = 2014110400;        // Requires this Moodle version
-$module->cron     = 300;         // Period for cron to check this module (secs) -- every 5 minutes
+$plugin->cron      = 300;         // Period for cron to check this module (secs) -- every 5 minutes
+$plugin->component = 'mod_wwassignment';
+$plugin->maturity  = MATURITY_STABLE;
+

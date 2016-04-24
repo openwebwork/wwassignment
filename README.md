@@ -9,7 +9,7 @@ advanced mathematics assignments through the Moodle LMS.
 
 This repository contains a branch that works with Moodle 1.9.8, the last of the Moodle 1.x versions, 
 as well as a branch that works with  Moodle 2.8.x versions including at this writing version 2.8.5.
-The branch ver3.0 is compatible with Moodle 3.x (so far).   
+The wwassignment branch ver3.0 and the wwlink branch ver 2.8 are compatible with Moodle 3.x (so far).   
 
 The original version of this software "wwmoodle" was written by Peter Snoblin at Truman State University
 in 2005 to connect WeBWorK1 and Moodle 1.  Additional development during 2006 and 2007 

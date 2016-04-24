@@ -136,8 +136,6 @@ file active copy it to `webwork.apache2.4-config`.
 ####################################################################
 # WebworkSOAP WSDL HANDLER :: TO BE REPLACED WITH A FILE FOR PRODUCTION SERVERS
 ####################################################################
-
-
  <Location /webwork2_wsdl>
          PerlSetVar dispatch_to "WebworkSOAP::WSDL"
          PerlSetVar options "compress_threshold => 10000"
@@ -146,6 +144,5 @@ file active copy it to `webwork.apache2.4-config`.
          Order Allow,Deny
          Allow from All
  </Location>
- 
-```
+ ```
 * Usually the perl handler should  be Apache::SOAP -- but if that doesn't work try Apache2::SOAP.  (The typical error message in your log file looks something like: `Illegal field name 'APR::Table=HASH(0x7f8153848ea8)' at /usr/share/perl5/vendor_perl/SOAP/Transport/HTTP2.pm `) If neither works ask a question on the forum and include the error message.  There a different versions of perl and of the SOAP modules and they don't always work well with each other. 

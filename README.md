@@ -3,15 +3,10 @@
 ## Moodle WeBWorK assignment activity module
 
 **wwassignment** and **wwlink** provide a reliable method of presenting introductory and 
-advanced mathematics assignments through the Moodle LMS.  They replace the "wwmoodle" repository.
-
-The modules are written in php and added to the Moodle installation in the directories
-moodle/mods (for wwassignment) and moodle/blocks (for wwlink).  These modules are compatible
-with Moodle 1.9.8+ and Moodle 2.x.y.
+advanced mathematics assignments through the Moodle LMS.  
 
 This repository contains a branch that works with Moodle 1.9.8, the last of the Moodle 1.x versions, 
-as well as a branch that works with  Moodle 2.8.x versions including at this writing version 2.8.5. 
-The branch 3.0 is compatible with moodle 3.x (so far) 
+as well as a branch that works with  Moodle 2.8.x versions including at this writing version 2.8.5.  
 
 The original version of this software "wwmoodle" was written by Peter Snoblin at Truman State University
 in 2005 to connect WeBWorK1 and Moodle 1.  Additional development during 2006 and 2007 
@@ -31,19 +26,17 @@ that they are easier to install.
 Quick install **wwlink**:
 
 1. cd moodle/blocks
-2. git clone https://github.com/openwebwork/wwlink.git
+2. git clone https://github.com/openwebwork/wwassignment.git
 
 Quick install **wwassignment**:
 
 1. cd moodle/mod
-2. git clone https://github.com/openwebwork/wwassignment.git
+2. git clone https://github.com/openwebwork/wwlink.git
 
 For most installations you will want to use the default branch which is ver2.8+
 
 A moodle administrator will need to log in to Moodle from the web in order to activate the two modules and 
 to configure the wwassignment preferences so that it points to a local webwork server. 
-
-No changes need to be made to WeBWorK except for uncommenting certain lines in the configuration file.
 
 For more details see the file "INSTALL and CONFIGURE" which also 
 describes how to enable the WeBWorK webservice at the WeBWorK installation.

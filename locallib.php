@@ -3,8 +3,8 @@ global $CFG,$DB;
 #require_once("$CFG->libdir/soap/nusoap.php");
 require_once("$CFG->libdir/soaplib.php");
 
-define('WWASSIGNMENT_DEBUG',0);
-// define('WWASSIGNMENT_DEBUG',1);
+//define('WWASSIGNMENT_DEBUG',0);
+ define('WWASSIGNMENT_DEBUG',1);
 
 
 //////////////////////////////////////////////////////////////////

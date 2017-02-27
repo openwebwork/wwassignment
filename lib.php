@@ -498,7 +498,9 @@ function wwassignment_cron() {
     //wwassignment_update_grades(null,0); 
    //try {    // try didn't work on some php systems -- leave it out.
     	 wwassignment_update_dirty_sets();
+    mtrace("wwassignment cron");
     debugLog("End wwassignment_cron");
+    mtrace("wwassignment cron");
     return true;
 }
 
@@ -517,69 +519,209 @@ function wwassignment_cron() {
 // 
 //     $modinfo = get_fast_modinfo($course);
 //     
-    
+
+// function report_log_userday($userid, $courseid, $daystart, $logreader = '') {
+//     global $DB;
+//     $logmanager = get_log_manager();
+//     $readers = $logmanager->get_readers();
+//     if (empty($logreader)) {
+//         $reader = reset($readers);
+//     } else {
+//         $reader = $readers[$logreader];
+//     }
+// 
+//     // If reader is not a sql_internal_table_reader and not legacy store then return.
+//     if (!($reader instanceof \core\log\sql_internal_table_reader) && !($reader instanceof logstore_legacy\log\store)) {
+//         return array();
+//     }
+// 
+//     $daystart = (int)$daystart; // Note: unfortunately pg complains if you use name parameter or column alias in GROUP BY.
+// 
+//     if ($reader instanceof logstore_legacy\log\store) {
+//         $logtable = 'log';
+//         $timefield = 'time';
+//         $coursefield = 'course';
+//         // Anonymous actions are never logged in legacy log.
+//         $nonanonymous = '';
+//     } else {
+//         $logtable = $reader->get_internal_log_table_name();
+//         $timefield = 'timecreated';
+//         $coursefield = 'courseid';
+//         $nonanonymous = 'AND anonymous = 0';
+//     }
+//     $params = array('userid' => $userid);
+// 
+//     $courseselect = '';
+//     if ($courseid) {
+//         $courseselect = "AND $coursefield = :courseid";
+//         $params['courseid'] = $courseid;
+//     }
+//     return $DB->get_records_sql("SELECT FLOOR(($timefield - $daystart)/" . HOURSECS . ") AS hour, COUNT(*) AS num
+//                                    FROM {" . $logtable . "}
+//                                   WHERE userid = :userid
+//                                         AND $timefield > $daystart $courseselect $nonanonymous
+//                                GROUP BY FLOOR(($timefield - $daystart)/" . HOURSECS . ") ", $params);
+// }
+// 
+// target = course_module
+// objecttable = wwassignment
+// id  = 
+// timecreated
+// courseid
+
 function wwassignment_update_dirty_sets() {  // update grades for all instances which have been modified since last cronjob
     global $CFG,$DB;
+    global $CFG;
+require_once($CFG->dirroot.'/course/lib.php');
+require_once($CFG->dirroot.'/report/log/locallib.php');
+require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->dirroot.'/lib/tablelib.php');
+
 	$timenow = time();
 	$lastcron = $DB->get_field("modules","lastcron",array( "name"=>"wwassignment" ));
-//	error_log ("lastcron is $lastcron and time now is $timenow");
-	
-	//error_log ("sql string = $sql");
-	// Could we speed this up by getting all of the log records pertaining to webwork in one go?
-	// Or perhaps just the log records which have occured after the lastcron date
-	// Then create a hash with wwassignment->id  => timemodified
-	// means just one database lookup
-    $counter = 0;
-	$logRecords = get_logs("l.module LIKE \"wwassignment\" AND l.time >$lastcron ", null, "l.time ASC", $counter);
-	$wwmodtimes=array();
-	foreach ($logRecords as $record) {     
-  	  $wwmodtimes[$wwid =$record->info] = $record->time;
+	$lastcron = 1483202964; # so we get some examples
+	debugLog("1. lastcron is $lastcron and time now is $timenow");
+	////////////////////
+	$logreader='';
+     $logmanager = get_log_manager();
+     $readers = $logmanager->get_readers();
+    if (empty($logreader)) {
+        $reader = reset($readers);
+    } else {
+        $reader = $readers[$logreader];
+    }
+	debugLog("reader is not yet known 4");
+	if ($reader instanceof \core\log\sql_internal_table_reader) {
+		debugLog("reader is instance of \core\log\sql_internal_table_reader" );
 	}
 
-	// Create an array with the wwid values
-	$idValues= implode(",", array_keys($wwmodtimes) );
-        list($usql,$params) = $DB->get_in_or_equal($idValues);
+    // If reader is not a sql_internal_table_reader and not legacy store then return.
+    if (!($reader instanceof \core\log\sql_internal_table_reader) && !($reader instanceof logstore_legacy\log\store)) {
+        //return array();
+        mtrace("don't have access to the right kind of logs");
+        debugLog("bad logs ");
+    }
+        debugLog("continue processing");
+// 	   $daystart = (int)$lastcron; // Note: unfortunately pg complains if you use name parameter or column alias in GROUP BY.
+// 
+    if ($reader instanceof logstore_legacy\log\store) {
+        $logtable = 'log';
+        $timefield = 'time';
+        $coursefield = 'course';
+        // Anonymous actions are never logged in legacy log.
+        $nonanonymous = '';
+    } else {
+        $logtable = $reader->get_internal_log_table_name();
+        $timefield = 'timecreated';
+        $coursefield = 'courseid';
+        $nonanonymous = 'AND anonymous = 0';
+    }
 
-	//error_log("values string $idValues");
-	//error_log("last modification times".print_r($wwmodtimes,true));
-        
-    
-	$sql = "SELECT a.*, cm.idnumber as cmidnumber, a.course as courseid, cm.id as wwinstanceid " .
-               "FROM {wwassignment} a, {course_modules} cm, {modules} m WHERE m.name = 'wwassignment' " .
-               "AND m.id=cm.module AND cm.instance=a.id AND a.id $usql";
-    
-	$sql3 = "SELECT a.* FROM {wwassignment} a WHERE a.id $usql";
-	
-	//error_log("last modification times".print_r($wwmodificationtime,true));
-	
-	if ($rs = $DB->get_recordset_sql($sql,$params)) {
-		foreach ( $rs as $wwassignment ) {
-			if (!$wwassignment->cmidnumber) { // is this ever needed?
-				$wwassignment->cmidnumber =_wwassignment_cmid() ;
-			}
-             $wwassignment->timemodified  = $wwmodtimes[$wwassignment->id];
-             if ($wwassignment->timemodified > $lastcron) {
-//             	error_log("instance needs update.  timemodified ".$wwassignment->timemodified.
-//             	     ", lastcron $lastcron, course id ".$wwassignment->course.", wwassignment id ".$wwassignment->id.
-//             	     ", set name ".$wwassignment->name.", cm.id ".$wwassignment->wwinstanceid);
-             	if ($wwassignment->grade != 0) {
-					wwassignment_update_grades($wwassignment);
-				} else {
-				   wwassignment_grade_item_update($wwassignment);
-				}
-				// refresh events for this assignment
-				_wwassignment_refresh_event($wwassignment);
-				
-             } else {
-//             	error_log("no update needed.  timemodified ".$wwassignment->timemodified.
-//             	 ", lastcron $lastcron, course id ".$wwassignment->course.", wwassignment id ".$wwassignment->id.
-//             	", set name ".$wwassignment->name.", cm.id ".$wwassignment->wwinstanceid);
-             }
+// 
+//     $courseselect = '';
+//     if ($courseid) {
+//         $courseselect = "AND $coursefield = :courseid";
+//         $params['courseid'] = $courseid;
+//     }
 
-		}
-		$rs->close();
-	}
-//	error_log("done with updating dirty sets");
+     $params['module_type'] = 'course_module';
+     $params['wwassignment']  = 'wwassignment';
+ 	debugLog("using the log table $logtable");
+// 
+//     //$daystart = (int)$daystart; // Note: unfortunately pg complains if you use name parameter or column alias in GROUP BY.
+//     ////////////////
+// 	//error_log ("sql string = $sql");
+// 	// Could we speed this up by getting all of the log records pertaining to webwork in one go?
+// 	// Or perhaps just the log records which have occured after the lastcron date
+// 	// Then create a hash with wwassignment->id  => timemodified
+// 	// means just one database lookup
+//     $counter = 0;
+//     // this is most likely what needs to be replaced
+//     
+//     
+// 	// $logRecords = get_logs("l.module LIKE \"wwassignment\" AND l.time >$lastcron ", null, "l.time ASC", $counter,'');
+	$logRecords = $DB->get_records_sql("SELECT $timefield  AS time, COUNT(*) AS num, 
+	                             $coursefield AS courseid, target AS target, 
+	                             objecttable AS module,
+	                             id AS eventid
+                                   FROM {" . $logtable . "}
+                                  WHERE $timefield > $lastcron 
+                                        AND target = :module_type
+                                        AND objecttable = :wwassignment
+                               GROUP BY $timefield", $params);
+    $number_of_log_records = count($logRecords);
+    debugLog("number of logRecords $number_of_log_records");
+    //debugLog(print_r($logRecords,true));
+    
+	mtrace("2. last CRON is $lastcron,    then TIMENOW $timenow");
+	
+	
+	
+ 	$wwmodtimes=array();
+ 	foreach ($logRecords as $record) { 
+ 	  debugLog("record info ".($record->courseid));
+ 	  debugLog("record time ".($record->time));    
+   	  $wwmodtimes[$record->courseid] = $record->time;
+ 	}
+// 
+//  	// Create an array with the wwid values
+//  	$idValues= implode(",", array_keys($wwmodtimes) );
+//     //list($insql,$inparams) = $DB->get_in_or_equal($idValues,SQL_PARAMS_NAMED);
+     $arraykeys = array_keys($wwmodtimes);
+//     //debugLog("array_keys ".print_r($arraykeys,true));
+     list($insql,$inparams) = $DB->get_in_or_equal($arraykeys,SQL_PARAMS_NAMED);
+//     //list($insql, $inparams) = $DB->get_in_or_equal($wwmodtimes,SQL_PARAMS_NAMED);
+//  	debugLog("values string: $idValues");
+//     debugLog("last modification times".print_r($wwmodtimes,true));
+     debugLog("insql ".print_r($insql,true));
+     debugLog("array values".print_r(array_values($arraykeys),true));
+      debugLog("inparams ".print_r($inparams, true));    
+     
+ 	$sql = "SELECT a.*, cm.idnumber as cmidnumber, a.course as courseid, 
+ 	                    cm.id as wwinstanceid " .
+                "FROM {wwassignment} a, 
+                      {course_modules} cm, 
+                      {modules} m 
+                 WHERE m.name = 'wwassignment' 
+                      AND m.id=cm.module 
+                      AND cm.instance=a.id 
+                      AND a.id $insql";
+    debugLog("sql is $sql");     
+// 	$sql3 = "SELECT a.* FROM {wwassignment} a WHERE a.id $usql";
+// 	
+// 	
+//  	if ($rs = $DB->get_recordset_sql($sql,$inparams)) {
+//  	    debugLog("record sets are ".print_r($rs, true));
+//  		foreach ( $rs as $wwassignment ) {
+//  			debugLog("one record set ".print_r($wwassignment, true));
+//  			if (!$wwassignment->cmidnumber) { // is this ever needed?
+//  				$wwassignment->cmidnumber =_wwassignment_cmid() ;
+//  			}
+//               $wwassignment->timemodified  = $wwmodtimes[$wwassignment->id];
+//               if ($wwassignment->timemodified > $lastcron) {
+//              	debugLog("instance needs update.  timemodified ".$wwassignment->timemodified.
+//              	     ", lastcron $lastcron, course id ".$wwassignment->course.", wwassignment id ".$wwassignment->id.
+//              	     ", set name ".$wwassignment->name.", cm.id ".$wwassignment->wwinstanceid);
+//               	if ($wwassignment->grade != 0) {
+//               	    debugLog("update entire set ".print_r($wwassignment, true ) );
+//  					//wwassignment_update_grades($wwassignment);
+//  				} else {
+//  				   debugLog("update one item in set ".print_r($wwassignment, true) );
+//  				   //wwassignment_grade_item_update($wwassignment);
+//  				}
+// // 				// refresh events for this assignment
+// // 				_wwassignment_refresh_event($wwassignment);
+// // 				
+//               } else {
+//              	debugLog("no update needed.  timemodified ".$wwassignment->timemodified.
+//               	 ", lastcron $lastcron, course id ".$wwassignment->course.", wwassignment id ".$wwassignment->id.
+//               	", set name ".$wwassignment->name.", cm.id ".$wwassignment->wwinstanceid);
+//               }
+//  
+//  		}
+//  		$rs->close();
+//  	}
+	debugLog("done with updating dirty sets");
 	return(true);
 }
 

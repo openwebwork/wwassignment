@@ -53,15 +53,17 @@ function _wwassignment_get_course_students($courseid) {
 	//debugLog("roles used ". print_r($roles_used_in_context, true));
 	foreach($roles_used_in_context as $role) {
 		$roleid = $role->id;
- 		debugLog( "roleid should be 5 for a student $roleid");
+ 		//debugLog( "roleid should be 5 for a student $roleid");
  		//debugLog(get_role_users($roleid, $context, true) );
  		if ($new_users = get_role_users($roleid, $context, true) ) {
 			$users = array_merge($users, $new_users );//FIXME a user could be liseted twice
 		}
-		debugLog("display users ".print_r($users,true));
+		//debugLog("display users ".print_r($users,true));
 	}
  	debugLog("display users in course--on");
-	debugLog("users again".print_r($users, true));
+	foreach($users as $item) {
+		debugLog("user: ".$item->lastname);
+	}
 	
     debugLog("End get_course_students($courseid )");
 	return $users;
@@ -242,8 +244,8 @@ function _wwassignment_login_user($wwcoursename,$wwusername) {
 */
 function _wwassignment_cmid() {
    global $DB;
-   $wwassignment = $DB->get_record('modules', array( 'name'=>'wwassignment' ));
-   return $wwassignment->id;
+   $wwassignment_module = $DB->get_record('modules', array( 'name'=>'wwassignment' ));
+   return $wwassignment_module->id;
 }
 
 /**

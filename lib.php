@@ -32,11 +32,9 @@ require_once("locallib.php");
 //   wwassignment_update_grade_item(wwassignment) -- just updates grade_item table
 //   wwassignment_update_grade_item(wwassignment, grades) updates grade_item table and grade_grades table
 ////////////////////////////////////////////////////////////////
- 
- function grade_update($source, $courseid, $itemtype, $itemmodule, 
- $iteminstance, $itemnumber, $grades=NULL, $itemdetails=NULL) {
- 	error_log("function grade_update called but not implemented")
- }
+
+// not sure why this function is still here.
+// function grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, $itemnumber, $grades=NULL, $itemdetails=NULL) {
 
 /**
  * Refetches data from all course activities
@@ -195,8 +193,8 @@ function wwassignment_delete_instance($wwassignmentid) {
 
 
 function wwassignment_get_user_grades($wwassignment,$userid=0) {
-	debugLog("Begin wwassignment_get_user_grades");
-	//debugLog("inputs -- wwassignment" . print_r($wwassignment,true));
+	debugLog("Begin wwassignment_get_user_grades -- fetching grades from webwork");
+	debugLog("inputs -- wwassignment" . print_r($wwassignment,true));
 	debugLog("userid = $userid");
 	
 	require_once("locallib.php");
@@ -221,11 +219,8 @@ function wwassignment_get_user_grades($wwassignment,$userid=0) {
 		}
 	}
 	// get data from WeBWorK
-	debugLog("calling 'grade_users_sets'");
-	debugLog("course $wwcoursename set $wwsetname");
-	debugLog("students ".print_r($usernamearray,true));
-	$gradearray = $wwclient->grade_users_sets($wwcoursename,
-	                 $usernamearray,$wwsetname); 
+	debugLog("fetch grades from course: $wwcoursename set: $wwsetname");
+	$gradearray = $wwclient->grade_users_sets($wwcoursename,$usernamearray,$wwsetname); 
 	
 	// returns an array of grades -- the number of questions answered correctly?
 	// debugLog("usernamearray " . print_r($usernamearray, true));
@@ -238,7 +233,6 @@ function wwassignment_get_user_grades($wwassignment,$userid=0) {
 	$i =0;
 	foreach($students as $student) {
 		$studentid = $student->id;
-		debugLog("getting grade for ".($student->id));
 		$grade = new stdClass();
 			$grade->userid = $studentid;
 	        $grade->rawgrade = (is_numeric($gradearray[$i])) ? $gradearray[$i] : '';
@@ -620,7 +614,7 @@ require_once($CFG->dirroot.'/lib/tablelib.php');
 	$lastcron = $DB->get_field("modules","lastcron",array( "name"=>"wwassignment" ));
 	$lastcron = 1488778000; # so we get some examples
 	
-	debugLog("1. lastcron is $lastcron and time now is $timenow");
+	debugLog("wwassignment_update_dirty_sets:  lastcron is $lastcron and time now is $timenow");
 	
 	$logreader='';
      $logmanager = get_log_manager();
@@ -632,14 +626,14 @@ require_once($CFG->dirroot.'/lib/tablelib.php');
     }
 
 	if ($reader instanceof \core\log\sql_internal_table_reader) {
-		debugLog("reader is instance of \core\log\sql_internal_table_reader" );
+		debugLog("wwassignment_update_dirty_sets: reader is instance of \core\log\sql_internal_table_reader" );
 	}
 
     // If reader is not a sql_internal_table_reader and not legacy store then return.
     if (!($reader instanceof \core\log\sql_internal_table_reader) && !($reader instanceof logstore_legacy\log\store)) {
         //return array();
-        mtrace("don't have access to the right kind of logs");
-        debugLog("bad logs ");
+        mtrace("wwassignment_update_dirty_sets:don't have access to the right kind of logs");
+        debugLog("wwassignment_update_dirty_sets:bad logs ");
     }
     /////////////////////////////////////////////////////////////////////
     //  This is the legacy code, it imitates reading from the old log file
@@ -692,7 +686,7 @@ require_once($CFG->dirroot.'/lib/tablelib.php');
 
 
      if ($reader instanceof logstore_legacy\log\store) {
-        debugLog("Reading from the old style logs");   
+        debugLog("wwassignment_update_dirty_sets:Reading from the old style logs");   
         $logtable = 'log';
         $timefield = 'time';
         $coursefield = 'course';
@@ -754,11 +748,9 @@ require_once($CFG->dirroot.'/lib/tablelib.php');
                                         AND objecttable = :wwassignment
                                GROUP BY $timefield", $params);
     $number_of_log_records = count($logRecords);
-    debugLog("number of logRecords $number_of_log_records");
+    debugLog("wwassignment_update_dirty_sets:number of logRecords $number_of_log_records");
     //debugLog(print_r($logRecords,true));
-    
-	mtrace("2. last CRON is $lastcron,    then TIMENOW $timenow");
-	
+  	
 	
 	
  	$wwmodtimes=array();
@@ -779,7 +771,7 @@ require_once($CFG->dirroot.'/lib/tablelib.php');
 //     //list($insql, $inparams) = $DB->get_in_or_equal($wwmodtimes,SQL_PARAMS_NAMED);
 //  	debugLog("values string: $idValues");
 //     debugLog("last modification times".print_r($wwmodtimes,true));
-     debugLog("insql ".print_r($insql,true));
+     //debugLog("insql ".print_r($insql,true));
      //debugLog("array values".print_r(array_values($arraykeys),true));
      debugLog("inparams ".print_r($inparams, true));  
 
@@ -816,7 +808,7 @@ require_once($CFG->dirroot.'/lib/tablelib.php');
 // This seems like a better sql query -- there is a lot of redundancy in the 
 // original query.  Perhaps this just project didn't get finished?
 ///////////////////////////////////////////////////////   
- 	$sql3 = "SELECT a.* FROM {wwassignment} a WHERE a.id $usql";
+ 	//$sql3 = "SELECT a.* FROM {wwassignment} a WHERE a.id $usql";
  	
 ///////////////////////////////// 	
 // 	

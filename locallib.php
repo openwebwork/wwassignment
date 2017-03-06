@@ -43,24 +43,25 @@ function debugLog($message) {
 */
 
 function _wwassignment_get_course_students($courseid) {
-    debugLog("Begin get_course_students($courseid )");
+    debugLog("Begin get_course_students($courseid ) which fetches all the students in the course");
     debugLog("courseID is ". print_r($courseid, true));
 	$context = context_course::instance($courseid);
 	debugLog("context is ". print_r($context, true));
 	
 	$users = array();
 	$roles_used_in_context = get_roles_used_in_context($context);
-	//debugLog("roles used ". print_r($roles_used_in_context, true));
+	debugLog("roles used ". print_r($roles_used_in_context, true));
 	foreach($roles_used_in_context as $role) {
 		$roleid = $role->id;
- 		//debugLog( "roleid should be 5 for a student $roleid");
- 		//debugLog(get_role_users($roleid, $context, true) );
+ 		debugLog( "roleid should be 5 for a student $roleid");
+ 		debugLog(get_role_users($roleid, $context, true) );
  		if ($new_users = get_role_users($roleid, $context, true) ) {
-			$users = array_merge($users, $new_users );//FIXME a user could be liseted twice
+			$users = array_merge($users, $new_users );
+			//FIXME a user could be listed twice if they had two roles.
 		}
 		//debugLog("display users ".print_r($users,true));
 	}
- 	debugLog("display users in course--on");
+ 	debugLog("getting logins of users in courseid $courseid");
 	foreach($users as $item) {
 		debugLog("user: ".$item->lastname);
 	}

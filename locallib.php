@@ -411,18 +411,19 @@ class wwassignment_client {
                         $params = array_merge($this->defaultparams,$params);
                 }
                 if(WWASSIGNMENT_DEBUG) {
-                    echo "Called: $functioncall <br>";
+                    echo "Handler called: $functioncall <br>";
                     echo "Params: ";
                     var_dump($params);
                     echo "<br>"; 
                 }
                 $result = $this->client->__soapCall($functioncall,$params);
-                
-                //$result = call_user_func_array(array(&$this->client,$functioncall),$params);
-#                if($err = $this->client->getError()) {
-#                        //print_error(get_string("rpc_fault","wwassignment') . " " . $functioncall. " ". $err);
-#                        print_error('rpc_error','wwassignment');  
-#                }
+                debugLog("result is ".print_r($result, true));
+                // FIXME what does call_user_func array do?);
+//                 $result = call_user_func_array(array(&$this->client,$functioncall),$params);
+//                 if($err = $this->client->getError()) {
+//                         //print_error(get_string("rpc_fault","wwassignment') . " " . $functioncall. " ". $err);
+//                         print_error('rpc_error','wwassignment');  
+//                 }
                 return $result;
         }
         

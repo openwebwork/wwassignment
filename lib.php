@@ -520,6 +520,7 @@ function wwassignment_print_recent_activity($course, $isteacher, $timestart) {
 * returns true if successful
 */
 function wwassignment_cron() {	
+    mtrace("-----------------------begin wwassignment_cron-----------------------");
     debugLog("Begin wwassignment_cron");
 
     //FIXME: Add a call that updates all events with dates (in case people forgot to push)
@@ -528,9 +529,8 @@ function wwassignment_cron() {
     //wwassignment_update_grades(null,0); 
    //try {    // try didn't work on some php systems -- leave it out.
     	 wwassignment_update_dirty_sets();
-    mtrace("wwassignment cron");
     debugLog("End wwassignment_cron");
-    mtrace("wwassignment cron");
+    mtrace("-----------------------end wwassignment_cron-----------------------");
     return true;
 }
 
@@ -835,7 +835,7 @@ require_once($CFG->dirroot.'/lib/tablelib.php');
  				}
  				   
 // 				// refresh events for this assignment
-// 				_wwassignment_refresh_event($wwassignment);
+ 				_wwassignment_refresh_event($wwassignment);
 // 				
               } else {  // ?? shouldn't every record with id in $usql need an  update? why the extra check.
              	debugLog("no update needed.  timemodified ".$wwassignment->timemodified.

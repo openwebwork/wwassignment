@@ -1,8 +1,8 @@
 <?php
 global $CFG,$DB;
-#require_once("$CFG->libdir/soap/nusoap.php");
 require_once("$CFG->libdir/soaplib.php");
-
+require_once("$CFG->dirroot/calendar/lib.php");
+          
 define('WWASSIGNMENT_DEBUG',0);
 // define('WWASSIGNMENT_DEBUG',1);
 //define('WWASSIGNMENT_TRACE',0);
@@ -128,7 +128,7 @@ function _wwassignment_create_events($wwassignment,$wwsetdata ) {
     $event->courseid = $courseid;
     $event->groupid = 0;
     $event->userid = 0;
-    //$event->format = 1;
+    $event->format = 1;
     $event->modulename = 'wwassignment';
     $event->instance = $wwassignmentid;
     $event->visible  = 1;    
@@ -152,13 +152,18 @@ function _wwassignment_create_events($wwassignment,$wwsetdata ) {
 //  
 //   calendar_event::create($event);
 // 
-	debugLog("adding a due event");
+	traceLog("adding a due event");
     $result = 0;
+    //global $CFG;
+    require_once("$CFG->dirroot/calendar/lib.php");
+  
 //     // $calendareventid = add_event($event); //calendar_event::create($event);//
 
 // FIXME -- this throws an error. ????
-//    $calendareventid = calendar_event::create($event);
 
+
+    //$calendareventid = calendar_event::create($event);
+    traceLog("due event added");
     if(!$calendareventid) {
         debugLog("can't create calendarevent for set $wwsetname wwid $wwassignmentid date $opendate $duedate course $courseid");
         $result = -1;

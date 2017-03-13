@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 $plugin->version   = 2015030918;  // The current module version (Date: YYYYMMDDXX)
 $plugin->requires  = 2014110400;        // Requires this Moodle version
-$plugin->cron      = 10;         // Period for cron to check this module (secs) -- every 5 minutes
+$plugin->cron      = 300;         // Period for cron to check this module (secs) -- every 5 minutes
 $plugin->component = 'mod_wwassignment';
 $plugin->maturity  = MATURITY_STABLE;
 

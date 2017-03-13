@@ -211,7 +211,7 @@ function _wwassignment_update_dirty_sets() {  // update grades for all instances
 	/////////////////////////////////////////////////////////////////////
 	$lastcron = $DB->get_field("modules","lastcron",array( "name"=>"wwassignment" ));
 	//FIXME make sure to readjust lastcron value
-	$lastcron = 1488778000; # so we get some examples
+	// $lastcron = 1488778000; # so we get some examples
 	
 	debugLog("_wwassignment_update_dirty_sets:  lastcron is $lastcron and time now is $timenow");
 	

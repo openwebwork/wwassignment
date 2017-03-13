@@ -4,44 +4,37 @@ require_once("locallib.php");
 
 // debug switch defined in locallib.php  define('WWASSIGNMENT_DEBUG',0);
 
-////////////////////////////////////////////////////////////////
-// External grade triggers
-//      wwassignment_update_grades(wwassignment,userid=0) is called from
-//           grade_update_mod_grades in gradlib.php and also from wwassignment/upgrade.php file
-//           grade_update_mod_grades is called by $grade_item->refresh_grades
-//      
-//      wwassignment_grade_item_update(wwassignment)
-//           is called from grade_update_mod_grades (before update_grades(wwassignment,userid=0))) 
+/** /////////////////////////////////////////////////////////////
+* External grade triggers
+*      1. wwassignment_update_grades(wwassignment,userid=0) is called from
+*           grade_update_mod_grades in gradlib.php and also from wwassignment/upgrade.php file
+*            grade_update_mod_grades is called by $grade_item->refresh_grades
+*         * handles updating the actual grades
+*      2. wwassignment_grade_item_update(wwassignment)
+*           is called from grade_update_mod_grades (before update_grades(wwassignment,userid=0))) 
+*         * updates the items (e.g. homework sets) that are graded
+*
+* High level grade calls are in gradelib.php  (see end of file)
+*/
 //
-//      wwassignment_get_user_grades 
-//   	      could be called from  wwassignment/index.php pages (legacy??)
-//
-// High level grade calls in gradelib.php  (see end of file)
-//
-//
-//
+
 // Internal grade calling structure
 //
-//   wwassignment_update_grades($wwassignment=null, $userid=0, $nullifnone=true) -- updates grades for assignment instance or all instances
-//                 wwassignment_get_user_grades($wwassignment,$userid=0)  -- fetches homework grades from WeBWorK
-//						_wwassignment_get_course_students($courseid) -- collects users from moodle database
-//                      $wwclient->grade_users_sets($webworkcourse,$webworkusers,$webworkset) -- fetches grades from a given course, set and user collection
-//                 wwassignment_grade_item_update(wwassignment, grades)
+//   1. wwassignment_update_grades($wwassignment=null, $userid=0, $nullifnone=true) 
+//       -- updates grades for assignment instance or all instances
+//              * wwassignment_get_user_grades($wwassignment,$userid=0)  
+//                      -- fetches homework grades from WeBWorK
+//					* _wwassignment_get_course_students($courseid) -- collects users from moodle database
+//                  * $wwclient->grade_users_sets($webworkcourse,$webworkusers,$webworkset) 
+//                        -- fetches grades from a given course, set and user collection
+//   2. wwassignment_grade_item_update(wwassignment, grades)
 //                      grade_update(...) -- fills record in grade_item table and possibly in grade_grades table as well
 //
-//   wwassignment_update_grade_item(wwassignment) -- just updates grade_item table
-//   wwassignment_update_grade_item(wwassignment, grades) updates grade_item table and grade_grades table
+////////////////////////////////////////////////////////////////
+// This functino is defined in gradeslib.php -- I believe
+// function grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, $itemnumber, $grades=NULL, $itemdetails=NULL) {
 ////////////////////////////////////////////////////////////////
 
-// not sure why this function is still here.
-// function grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, $itemnumber, $grades=NULL, $itemdetails=NULL) {
-
-/**
- * Refetches data from all course activities
- * @param int $courseid
- * @param string $modname
- * @return success
- */
 
 
 ////////////////////////////////////////////////////////////////
@@ -691,10 +684,11 @@ function wwassignment_refresh_events($courseid = 0) {
 //     return true;
 // }
 
-
+///////////////////////////////////////////////////////////////////////////////////////
 // High level grade calls ins gradelib.php
+///////////////////////////////////////////////////////////////////////////////////////
 
-/**
+/** A. 
  * Returns grading information for given activity - optionally with users grades
  * Manual, course or category items can not be queried.
  * @public
@@ -706,10 +700,10 @@ function wwassignment_refresh_events($courseid = 0) {
  * @return array of grade information objects (scaleid, name, grade and locked status, etc.) indexed with itemnumbers
  */
  
-// function grade_get_grades($courseid, $itemtype, $itemmodule, $iteminstance, $userid_or_ids=null) {
+// A. function grade_get_grades($courseid, $itemtype, $itemmodule, $iteminstance, $userid_or_ids=null) {
  
  
- /**
+ /** B.
  * Submit new or update grade; update/create grade_item definition. Grade must have userid specified,
  * rawgrade and feedback with format are optional. rawgrade NULL means 'Not graded', missing property
  * or key means do not change existing.
@@ -728,15 +722,19 @@ function wwassignment_refresh_events($courseid = 0) {
  * @param mixed $grades grade (object, array) or several grades (arrays of arrays or objects), NULL if updating grade_item definition only
  * @param mixed $itemdetails object or array describing the grading item, NULL if no change
  */
-// function grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, $itemnumber, $grades=NULL, $itemdetails=NULL) {
+ 
+/** 
+*   B. function grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, 
+*        $itemnumber, $grades=NULL, $itemdetails=NULL) {}
 
-/**
- * Refetches data from all course activities
- * @param int $courseid
- * @param string $modname
- * @return success
- */
-// function grade_grab_course_grades($courseid, $modname=null) {
+/**  C.
+* Refetches data from all course activities
+* @param int $courseid
+* @param string $modname
+* @return success
+*   C. function grade_grab_course_grades($courseid, $modname=null) {}
+*/
+///////////////////////////////////////////////////////////////////////////////////////
 
 function wwassignment_supports($feature) {
     switch($feature) {
@@ -748,7 +746,7 @@ function wwassignment_supports($feature) {
 
 
 /**
- * Given a coursemodule object, this function returns the extra
+ * Given a coursemodule object, `wwassignment_get_coursemodule_info` function returns the extra
  * information needed to print this activity in various places.
  *
  * If folder needs to be displayed inline we store additional information

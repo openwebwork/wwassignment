@@ -5,8 +5,8 @@ require_once("$CFG->dirroot/calendar/lib.php");
           
 define('WWASSIGNMENT_DEBUG',0);
 // define('WWASSIGNMENT_DEBUG',1);
-//define('WWASSIGNMENT_TRACE',0);
- define('WWASSIGNMENT_TRACE',1);
+define('WWASSIGNMENT_TRACE',0);
+//define('WWASSIGNMENT_TRACE',1);
 
 
 //////////////////////////////////////////////////////////////////
@@ -117,8 +117,8 @@ function _wwassignment_create_events($wwassignment,$wwsetdata ) {
     if (! $courseName = $wwassignment->name ) {
        	debugLog(" undefined course name ");
     } 
-     if (! $courseid = $wwassignment->id ) {
-       	debugLog(" undefined course name ");
+     if (! $courseid = $wwassignment->course) {
+       	debugLog(" undefined course id ");
     } 
   
 //     unset($event);
@@ -162,7 +162,7 @@ function _wwassignment_create_events($wwassignment,$wwsetdata ) {
 // FIXME -- this throws an error. ????
 
 
-    //$calendareventid = calendar_event::create($event);
+    $calendareventid = calendar_event::create($event);
     traceLog("due event added");
     if(!$calendareventid) {
         debugLog("can't create calendarevent for set $wwsetname wwid $wwassignmentid date $opendate $duedate course $courseid");

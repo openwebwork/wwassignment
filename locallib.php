@@ -4,7 +4,7 @@ require_once("$CFG->libdir/soaplib.php");
 require_once("$CFG->dirroot/calendar/lib.php");
           
 define('WWASSIGNMENT_DEBUG',0);
-// define('WWASSIGNMENT_DEBUG',1);
+//define('WWASSIGNMENT_DEBUG',1);
 define('WWASSIGNMENT_TRACE',0);
 //define('WWASSIGNMENT_TRACE',1);
 
@@ -366,7 +366,14 @@ function _wwassignment_update_dirty_sets() {  // update grades for all instances
 //     //list($insql,$inparams) = $DB->get_in_or_equal($idValues,SQL_PARAMS_NAMED);
      $arraykeys = array_keys($wwmodtimes);
 //     //debugLog("array_keys ".print_r($arraykeys,true));
+	if (count( $arraykeys)==0) {
+	    traceLog("-----------------no grades to update -------------------------------");
+		traceLog("-----------------End _wwassignment_update_dirty_sets---------------");
+		return true;
+	}
+	 traceLog("------ find arraykeys in SQL_PARAMs_NAMEd");
      list($insql,$inparams) = $DB->get_in_or_equal($arraykeys,SQL_PARAMS_NAMED);
+
 //     //list($insql, $inparams) = $DB->get_in_or_equal($wwmodtimes,SQL_PARAMS_NAMED);
 //  	debugLog("values string: $idValues");
 //     debugLog("last modification times".print_r($wwmodtimes,true));

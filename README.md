@@ -2,6 +2,11 @@
 
  Active development of this Moodle module has moved to this site: wwassignment on https://github.com/openwebwork from it's original host at github.com/mgage
 
+1. August 28, 2017: The merged pull request ver3.1 updates wwassignment to work with moodle 3.*
+Read the comments on https://github.com/openwebwork/wwassignment/pull/3 for more detail.  The pull requests
+changes how wwassignment determines whether there has been recent assignment activity when performing the grade 
+update cron job.  The change was required to conform to the new way in which activities are logged in moodle 3.* vs moodle 2.8
+
 ## Moodle WeBWorK assignment activity module
 
 **wwassignment** and **wwlink** provide a reliable method of presenting introductory and 

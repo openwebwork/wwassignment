@@ -4,33 +4,35 @@ require_once("locallib.php");
 
 // debug switch defined in locallib.php  define('WWASSIGNMENT_DEBUG',0);
 
-////////////////////////////////////////////////////////////////
-// External grade triggers
-//      wwassignment_update_grades(wwassignment,userid=0) is called from
-//           grade_update_mod_grades in gradlib.php and also from wwassignment/upgrade.php file
-//           grade_update_mod_grades is called by $grade_item->refresh_grades
-//      
-//      wwassignment_grade_item_update(wwassignment)
-//           is called from grade_update_mod_grades (before update_grades(wwassignment,userid=0))) 
+/** /////////////////////////////////////////////////////////////
+* External grade triggers
+*      1. wwassignment_update_grades(wwassignment,userid=0) is called from
+*           grade_update_mod_grades in gradlib.php and also from wwassignment/upgrade.php file
+*            grade_update_mod_grades is called by $grade_item->refresh_grades
+*         * handles updating the actual grades
+*      2. wwassignment_grade_item_update(wwassignment)
+*           is called from grade_update_mod_grades (before update_grades(wwassignment,userid=0))) 
+*         * updates the items (e.g. homework sets) that are graded
+*
+* High level grade calls are in gradelib.php  (see end of file)
+*/
 //
-//      wwassignment_get_user_grades 
-//   	      could be called from  wwassignment/index.php pages (legacy??)
-//
-// High level grade calls in gradelib.php  (see end of file)
-//
-//
-//
+
 // Internal grade calling structure
 //
-//   wwassignment_update_grades($wwassignment=null, $userid=0, $nullifnone=true) -- updates grades for assignment instance or all instances
-//                 wwassignment_get_user_grades($wwassignment,$userid=0)  -- fetches homework grades from WeBWorK
-//						_wwassignment_get_course_students($courseid) -- collects users from moodle database
-//                      $wwclient->grade_users_sets($webworkcourse,$webworkusers,$webworkset) -- fetches grades from a given course, set and user collection
-//                 wwassignment_grade_item_update(wwassignment, grades)
+//   1. wwassignment_update_grades($wwassignment=null, $userid=0, $nullifnone=true) 
+//       -- updates grades for assignment instance or all instances
+//              * wwassignment_get_user_grades($wwassignment,$userid=0)  
+//                      -- fetches homework grades from WeBWorK
+//					* _wwassignment_get_course_students($courseid) -- collects users from moodle database
+//                  * $wwclient->grade_users_sets($webworkcourse,$webworkusers,$webworkset) 
+//                        -- fetches grades from a given course, set and user collection
+//   2. wwassignment_grade_item_update(wwassignment, grades)
 //                      grade_update(...) -- fills record in grade_item table and possibly in grade_grades table as well
 //
-//   wwassignment_update_grade_item(wwassignment) -- just updates grade_item table
-//   wwassignment_update_grade_item(wwassignment, grades) updates grade_item table and grade_grades table
+////////////////////////////////////////////////////////////////
+// This functino is defined in gradeslib.php -- I believe
+// function grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, $itemnumber, $grades=NULL, $itemdetails=NULL) {
 ////////////////////////////////////////////////////////////////
 
 
@@ -52,8 +54,7 @@ function wwassignment_install() {
 */
 function wwassignment_add_instance($wwassignment) {
     global $COURSE,$DB;
-
-    debugLog("Begin wwassignment_add_instance");
+    traceLog("-----------Begin wwassignment_add_instance-----------");
     debugLog("input wwassignment ");
     //debugLog( print_r($wwassignment, true) );
     
@@ -78,7 +79,7 @@ function wwassignment_add_instance($wwassignment) {
 		//notify gradebook
 		 wwassignment_grade_item_update($wwassignment);
 	}
-    debugLog("End wwassignment_add_instance");
+    traceLog("----------End wwassignment_add_instance------------");
     return $returnid;
 }
 
@@ -91,7 +92,7 @@ function wwassignment_add_instance($wwassignment) {
 function wwassignment_update_instance($wwassignment) {
     global $COURSE,$DB;
     require_once("locallib.php");
-    debugLog("Begin wwassignment_update_instance");
+    traceLog("---------Begin wwassignment_update_instance---------");
     
 
     //checking mappings
@@ -115,7 +116,7 @@ function wwassignment_update_instance($wwassignment) {
      //notify gradebook -- update  grades for this wwassignment only
      wwassignment_grade_item_update($wwassignment);
      wwassignment_update_grades($wwassignment);     
-     debugLog("End wwassignment_update_instance");
+     traceLog("-------End wwassignment_update_instance---------");
     
     return $returnid;
 }
@@ -125,12 +126,10 @@ function wwassignment_update_instance($wwassignment) {
 * @param integer $wwassignmentid The id of the assignment to delete.
 * @return bool Delete was successful or not.
 */
-function wwassignment_delete_instance($wwassignmentid) {
-    
+function wwassignment_delete_instance($wwassignmentid) {    
     global $DB;
-    
-    debugLog("Begin wwassignment_delete_instance -- input wwassignmentid:");
-    debugLog(print_r($wwassignmentid,true));
+    traceLog("---------- Begin wwassignment_delete_instance -------------");
+    debugLog("input wwassignmentid:".print_r($wwassignmentid,true));
     $result = true;
 
     #delete DB record
@@ -160,33 +159,32 @@ function wwassignment_delete_instance($wwassignmentid) {
      
      //notify gradebook
      wwassignment_grade_item_delete($wwassignment);
-    debugLog("End wwassignment_delete_instance -- input wwassignmentid:");
-
+    traceLog("------- End wwassignment_delete_instance --------");
     return $result;
 }
 
-    /** gradebook upgrades
+/** gradebook upgrades
     * add xxx_update_grades() function into mod/xxx/lib.php
-� � * add xxx_grade_item_update() function into mod/xxx/lib.php
-� � * patch xxx_update_instance(),  xxx_insert_instance()? xxx_add_instance() and xxx_delete_instance() to call xxx_grade_item_update()
-� � * patch all places of code that change grade values to call xxx_update_grades()
-� � * patch code that displays grades to students to use final grades from the gradebook�
-    **/
+    * add xxx_grade_item_update() function into mod/xxx/lib.php
+    * patch xxx_update_instance(),  xxx_insert_instance()? xxx_add_instance() and xxx_delete_instance() to call xxx_grade_item_update()
+    * patch all places of code that change grade values to call xxx_update_grades()
+    * patch code that displays grades to students to use final grades from the gradebook�
+**/
     
 
 /**
- * Return grade for given user or all users.
+ * Return, for a given homework assignment, the grade for a single user or for all users.
  *
  * @param int $assignmentid id of assignment
  * @param int $userid optional user id, 0 means all users
- * @return array array of grades, false if none
+ * @return a hash  of  studentid=>grade values , false if none
  */
 
 
 function wwassignment_get_user_grades($wwassignment,$userid=0) {
-	debugLog("Begin wwassignment_get_user_grades");
-	//debugLog("inputs -- wwassignment" . print_r($wwassignment,true));
-	//debugLog("userid = $userid");
+	traceLog("------Begin wwassignment_get_user_grades -- fetch grades from WW -----");
+	debugLog("inputs -- wwassignment" . print_r($wwassignment,true));
+	debugLog("userid = $userid");
 	
 	require_once("locallib.php");
 	
@@ -209,19 +207,24 @@ function wwassignment_get_user_grades($wwassignment,$userid=0) {
 			array_push($usernamearray,$student->username);
 		}
 	}
+	// get data from WeBWorK
+	debugLog("fetch grades from course: $wwcoursename set: $wwsetname");
+	$gradearray = $wwclient->grade_users_sets($wwcoursename,$usernamearray,$wwsetname); 
 	
-	$gradearray = $wwclient->grade_users_sets($wwcoursename,$usernamearray,$wwsetname); // FIXME? return key/value pairs instead?
 	// returns an array of grades -- the number of questions answered correctly?
 	// debugLog("usernamearray " . print_r($usernamearray, true));
 	// debugLog("grades($wwcoursename,usernamearray,$wwsetname) = " . print_r($gradearray, true));
 	// model for output of grades
+	
+	// FIXME? return key/value pairs instead? in grade_users_sets?
+	// this next segment matches students and their grades by dead reckoning
 	
 	$i =0;
 	foreach($students as $student) {
 		$studentid = $student->id;
 		$grade = new stdClass();
 			$grade->userid = $studentid;
-	                $grade->rawgrade = (is_numeric($gradearray[$i])) ? $gradearray[$i] : '';
+	        $grade->rawgrade = (is_numeric($gradearray[$i])) ? $gradearray[$i] : '';
 			$grade->feedback = "some text";
 			$grade->feedbackformat = 0;
 			$grade->usermodified = 0;
@@ -235,20 +238,21 @@ function wwassignment_get_user_grades($wwassignment,$userid=0) {
 	
 			
 	// end model
-	//debugLog("output student grades:" . print_r($studentgrades,true) );
-	debugLog("End wwassignment_get_user_grades");
+	debugLog("output student grades:" . print_r($studentgrades,true) );
+	traceLog("---------End wwassignment_get_user_grades---------");
 	return $studentgrades;
 }
 
 /**
+ * This can be called from outside wwassignment
  * Update grades by firing grade_updated event
  *
-  * @param object $wwassignment object with extra cmidnumber  ??
+ * @param object $wwassignment object with extra cmidnumber  ??
  * @param object $wwassignment null means all wwassignments
  * @param int $userid specific user only, 0 mean all
- */
+**/
 function wwassignment_update_grades($wwassignment=null, $userid=0, $nullifnone=true) {
-    debugLog("Begin wwassignment_update_grades");
+    traceLog("------- Begin wwassignment_update_grades---------");
     //debugLog("inputs wwassignment = " . print_r($wwassignment,true));
     debugLog("userid = $userid");
     global $CFG, $DB;
@@ -265,6 +269,7 @@ function wwassignment_update_grades($wwassignment=null, $userid=0, $nullifnone=t
 
         if ($grades = wwassignment_get_user_grades($wwassignment, $userid)) { # fetches all students if userid=0
             foreach($grades as $k=>$v) {
+                // doctor grades with a negative one
                 if ($v->rawgrade == -1) {
                     $grades[$k]->rawgrade = null;
                 }
@@ -274,7 +279,7 @@ function wwassignment_update_grades($wwassignment=null, $userid=0, $nullifnone=t
             wwassignment_grade_item_update($wwassignment);
         }
 
-    } else {  // find all the assignments
+    } else {  // find all the wwassignments in all courses and update all of them.
         debugLog("import grades for all wwassignments for all courses");
         $sql = "SELECT a.*, cm.idnumber as cmidnumber, a.course as courseid
                   FROM {wwassignment} a, {course_modules} cm, {modules} m
@@ -302,7 +307,7 @@ function wwassignment_update_grades($wwassignment=null, $userid=0, $nullifnone=t
         }
     }
 
-	debugLog("End wwassignment_update_grades");
+	traceLog("--------End wwassignment_update_grades--------");
 
 }
 /**
@@ -310,9 +315,20 @@ function wwassignment_update_grades($wwassignment=null, $userid=0, $nullifnone=t
  *
  * @param object $wwassignment object with extra cmidnumber
  * @param mixed optional array/object of grade(s); 'reset' means reset grades in gradebook
+ * side effect: uses contents of grades to change the values in the gradebook. 
+ * grades contains gradeitem objects containing all of the necessary information
+ *         	$grade->userid = $studentid;
+ * 	        $grade->rawgrade = (is_numeric($gradearray[$i])) ? $gradearray[$i] : '';
+ * 			$grade->feedback = "some text";
+ * 			$grade->feedbackformat = 0;
+ * 			$grade->usermodified = 0;
+ * 			$grade->dategraded = 0;
+ * 			$grade->datesubmitted = 0;
+ * 			$grade->id = $studentid;
  * @return int 0 if ok, error code otherwise
- */
+**/
 function wwassignment_grade_item_update ($wwassignment, $grades=NULL) {
+    traceLog("------- Begin wwassignment_grade_item_update ------- ");
     $msg = "Begin wwassignment_grade_item_update";
     $msg = ($grades)? $msg . " with grades (updates grade_grades table)" :$msg;
 	debugLog($msg);
@@ -332,7 +348,7 @@ function wwassignment_grade_item_update ($wwassignment, $grades=NULL) {
         $wwsetname    = _wwassignment_mapped_set($wwassignment->id,false);
     	$wwassignment->grade = $wwclient->get_max_grade($wwcoursename,$wwsetname,false);
     }
-	// set grade in wwassignment 
+	// set maximum grade in wwassignment record as "grade" for the homework set.
 	
     $params = array('itemname'=>$wwassignment->name, 'idnumber'=>$wwassignment->cmidnumber);
 
@@ -353,10 +369,14 @@ function wwassignment_grade_item_update ($wwassignment, $grades=NULL) {
         $params['reset'] = true;
         $grades = NULL;
     }
-    # grade_update() defined in gradelib.php 
-    # $grades=NULL means update grade_item table only, otherwise post grades in grade_grades
-    // error_log("update grades for courseid: ". $wwassignment->courseid . " assignment id: ".$wwassignment->id." time modified ".$wwassignment->timemodified);
-    return grade_update('mod/wwassignment', $wwassignment->courseid, 'mod', 'wwassignment', $wwassignment->id, 0, $grades, $params);
+    // grade_update() defined in gradelib.php 
+    // $grades=NULL means update grade_item table only, otherwise post grades in grade_grades
+    debugLog("wwassignment_grade_item_update: update grades for courseid: ". $wwassignment->courseid . 
+    " assignment id: ".$wwassignment->id." time modified ".
+    $wwassignment->timemodified."grades".print_r($grades,true));
+    traceLog("------- end wwassignment_grade_item_update ------- ");
+    return grade_update('mod/wwassignment', $wwassignment->courseid, 'mod', 'wwassignment',
+               $wwassignment->id, 0, $grades, $params);
 }
 /**
  * Delete grade item for given assignment
@@ -365,7 +385,7 @@ function wwassignment_grade_item_update ($wwassignment, $grades=NULL) {
  * @return object wwassignment ????
  */
 function wwassignment_grade_item_delete($wwassignment) {
-	debugLog("Begin wwassignment_grade_item_delete");
+	traceLog("-------Begin wwassignment_grade_item_delete------");
 	debugLog("inputs wwassignment " . print_r($wwassignment, true) );
 
     global $CFG;
@@ -374,7 +394,7 @@ function wwassignment_grade_item_delete($wwassignment) {
     if (!isset($wwassignment->courseid)) {
         $wwassignment->courseid = $wwassignment->course;
     }
-	debugLog("End wwassignment_grade_item_delete");
+	traceLog("-------End wwassignment_grade_item_delete---------");
     return grade_update('mod/wwassignment', $wwassignment->courseid, 'mod', 'wwassignment', $wwassignment->id, 0, NULL, array('deleted'=>1));
 
 
@@ -385,9 +405,9 @@ function wwassignment_grade_item_delete($wwassignment) {
  * This is done by calling the update_instance() method of the assignment type class
  */
 function wwassignment_item_update($wwassignment) {
-	debugLog("Begin wwassignment_item_update -- not yet defined!!!!");
+	traceLog("------Begin wwassignment_item_update -- not yet defined!!!!------");
 	debugLog("input wwassignment " . print_r($wwassignment,true) );
-	debugLog("End wwassignment_item_update -- not yet defined!!!!");	
+	traceLog("-------End wwassignment_item_update -- not yet defined!!!!-------");	
 }
 /**
 * @desc Contacts webwork to find out the completion status of a problem set for all users in a course.
@@ -395,7 +415,7 @@ function wwassignment_item_update($wwassignment) {
 * @return object The student grades indexed by student ID.
 */
 function wwassignment_grades($wwassignmentid) {
-//	error_log("Begin wwassignment_grades -- legacy function?");
+	traceLog("------ Begin wwassignment_grades -- legacy function?-------");
     global $COURSE,$DB;
     $wwclient = new wwassignment_client();
     $wwassignment = $DB->get_record('wwassignment', array( 'id'=>$wwassignmentid ));
@@ -425,6 +445,7 @@ function wwassignment_grades($wwassignmentid) {
     }
     $studentgrades->maxgrade = $wwclient->get_max_grade($wwcoursename,$wwsetname); 
 //    error_log("End wwassignment_grades -- legacy function?");
+    traceLog("------ End wwassignment_grades -- legacy function?-------");
     return $studentgrades;
 }
 
@@ -437,11 +458,13 @@ function wwassignment_grades($wwassignmentid) {
 * @return array Representing time, info pairing.
 */
 function wwassignment_user_outline($course, $user, $mod, $wwassignment) {
+    traceLog("--------Begin wwassignment_user_outline-----------------");
     $aLogs = get_logs("l.userid=$user AND l.course=$course AND l.cmid={$wwassignment->id}");
     if( count($aLogs) > 0 ) {
         $return->time = $aLogs[0]->time;
         $return->info = $aLogs[0]->info;
     }
+    traceLog("--------End wwassignment_user_outline-----------------");
     return $return;
 }
 
@@ -479,7 +502,8 @@ function wwassignment_delete_userdata() {
 */
 function wwassignment_print_recent_activity($course, $isteacher, $timestart) {
         global $CFG;
-//        error_log("Begin wwassignment_print_recent_activity --not used yet");
+        traceLog("-------- Begin wwassignment_print_recent_activity --not used yet -------");
+        traceLog("-------- End wwassignment_print_recent_activity --not used yet -------");
 
         return false;  //  True if anything was printed, otherwise false 
 }
@@ -490,15 +514,15 @@ function wwassignment_print_recent_activity($course, $isteacher, $timestart) {
 * returns true if successful
 */
 function wwassignment_cron() {	
-    debugLog("Begin wwassignment_cron");
+    traceLog("-------------Begin wwassignment_cron-------------------------");
 
     //FIXME: Add a call that updates all events with dates (in case people forgot to push)
     //wwassignment_refresh_events();
     //FIXME: Add a call that updates all grades in all courses
     //wwassignment_update_grades(null,0); 
    //try {    // try didn't work on some php systems -- leave it out.
-    	 wwassignment_update_dirty_sets();
-    debugLog("End wwassignment_cron");
+    	 _wwassignment_update_dirty_sets();
+    traceLog("---------------------End wwassignment_cron------------------------");
     return true;
 }
 
@@ -517,71 +541,55 @@ function wwassignment_cron() {
 // 
 //     $modinfo = get_fast_modinfo($course);
 //     
-    
-function wwassignment_update_dirty_sets() {  // update grades for all instances which have been modified since last cronjob
-    global $CFG,$DB;
-	$timenow = time();
-	$lastcron = $DB->get_field("modules","lastcron",array( "name"=>"wwassignment" ));
-//	error_log ("lastcron is $lastcron and time now is $timenow");
-	
-	//error_log ("sql string = $sql");
-	// Could we speed this up by getting all of the log records pertaining to webwork in one go?
-	// Or perhaps just the log records which have occured after the lastcron date
-	// Then create a hash with wwassignment->id  => timemodified
-	// means just one database lookup
-    $counter = 0;
-	$logRecords = get_logs("l.module LIKE \"wwassignment\" AND l.time >$lastcron ", null, "l.time ASC", $counter);
-	$wwmodtimes=array();
-	foreach ($logRecords as $record) {     
-  	  $wwmodtimes[$wwid =$record->info] = $record->time;
-	}
 
-	// Create an array with the wwid values
-	$idValues= implode(",", array_keys($wwmodtimes) );
-        list($usql,$params) = $DB->get_in_or_equal($idValues);
-
-	//error_log("values string $idValues");
-	//error_log("last modification times".print_r($wwmodtimes,true));
-        
-    
-	$sql = "SELECT a.*, cm.idnumber as cmidnumber, a.course as courseid, cm.id as wwinstanceid " .
-               "FROM {wwassignment} a, {course_modules} cm, {modules} m WHERE m.name = 'wwassignment' " .
-               "AND m.id=cm.module AND cm.instance=a.id AND a.id $usql";
-    
-	$sql3 = "SELECT a.* FROM {wwassignment} a WHERE a.id $usql";
-	
-	//error_log("last modification times".print_r($wwmodificationtime,true));
-	
-	if ($rs = $DB->get_recordset_sql($sql,$params)) {
-		foreach ( $rs as $wwassignment ) {
-			if (!$wwassignment->cmidnumber) { // is this ever needed?
-				$wwassignment->cmidnumber =_wwassignment_cmid() ;
-			}
-             $wwassignment->timemodified  = $wwmodtimes[$wwassignment->id];
-             if ($wwassignment->timemodified > $lastcron) {
-//             	error_log("instance needs update.  timemodified ".$wwassignment->timemodified.
-//             	     ", lastcron $lastcron, course id ".$wwassignment->course.", wwassignment id ".$wwassignment->id.
-//             	     ", set name ".$wwassignment->name.", cm.id ".$wwassignment->wwinstanceid);
-             	if ($wwassignment->grade != 0) {
-					wwassignment_update_grades($wwassignment);
-				} else {
-				   wwassignment_grade_item_update($wwassignment);
-				}
-				// refresh events for this assignment
-				_wwassignment_refresh_event($wwassignment);
-				
-             } else {
-//             	error_log("no update needed.  timemodified ".$wwassignment->timemodified.
-//             	 ", lastcron $lastcron, course id ".$wwassignment->course.", wwassignment id ".$wwassignment->id.
-//             	", set name ".$wwassignment->name.", cm.id ".$wwassignment->wwinstanceid);
-             }
-
-		}
-		$rs->close();
-	}
-//	error_log("done with updating dirty sets");
-	return(true);
-}
+// function report_log_userday($userid, $courseid, $daystart, $logreader = '') {
+//     global $DB;
+//     $logmanager = get_log_manager();
+//     $readers = $logmanager->get_readers();
+//     if (empty($logreader)) {
+//         $reader = reset($readers);
+//     } else {
+//         $reader = $readers[$logreader];
+//     }
+// 
+//     // If reader is not a sql_internal_table_reader and not legacy store then return.
+//     if (!($reader instanceof \core\log\sql_internal_table_reader) && !($reader instanceof logstore_legacy\log\store)) {
+//         return array();
+//     }
+// 
+//     $daystart = (int)$daystart; // Note: unfortunately pg complains if you use name parameter or column alias in GROUP BY.
+// 
+//     if ($reader instanceof logstore_legacy\log\store) {
+//         $logtable = 'log';
+//         $timefield = 'time';
+//         $coursefield = 'course';
+//         // Anonymous actions are never logged in legacy log.
+//         $nonanonymous = '';
+//     } else {
+//         $logtable = $reader->get_internal_log_table_name();
+//         $timefield = 'timecreated';
+//         $coursefield = 'courseid';
+//         $nonanonymous = 'AND anonymous = 0';
+//     }
+//     $params = array('userid' => $userid);
+// 
+//     $courseselect = '';
+//     if ($courseid) {
+//         $courseselect = "AND $coursefield = :courseid";
+//         $params['courseid'] = $courseid;
+//     }
+//     return $DB->get_records_sql("SELECT FLOOR(($timefield - $daystart)/" . HOURSECS . ") AS hour, COUNT(*) AS num
+//                                    FROM {" . $logtable . "}
+//                                   WHERE userid = :userid
+//                                         AND $timefield > $daystart $courseselect $nonanonymous
+//                                GROUP BY FLOOR(($timefield - $daystart)/" . HOURSECS . ") ", $params);
+// }
+// 
+// target = course_module
+// objecttable = wwassignment
+// id  = 
+// timecreated
+// courseid
 
 
 /**
@@ -599,81 +607,88 @@ function wwassignment_get_participants($wwassignmentid) {
     return _wwassignment_get_course_students( $wwassignment->course );
 }
 
-
+//FIXME -- this should be restored
 function wwassignment_refresh_events($courseid = 0) {
-//    error_log('wwassignment_refresh_events called --not yet defined');
-    global $DB;
-// This standard function will check all instances of this module
-// and make sure there are up-to-date events created for each of them.
-// If courseid = 0, then every wwassignment event in the site is checked, else
-// only wwassignment events belonging to the course specified are checked.
-// This function is used, in its new format, by restore_refresh_events() and by the cron function
-// 
-    // find wwassignment instances associated with this course or all wwassignment modules
-     $courses = array();  # create array of courses
-    if ($courseid) {
-        if (! $wwassignments = $DB->get_records("wwassignment", array("course"=>$courseid) )) {
-            return true;
-        } else {
-        	$courses[$courseid]= array();      // collect wwassignments for this course
-        	array_push( $courses[$courseid],   $wwassignments );  
-        }
-    } else {
-        if (! $wwassignments = $DB->get_records("wwassignment")) {
-            return true;
-        } else {
-        	foreach ($wwassignments as $ww ) {
-        		// collect wwassignments for each course
-//        		error_log("course id ".$ww->course);
-        		if (! ($courses[$ww->course] ) ) {
-        			$courses[$ww->course] = array();
-        		}
-        		array_push($courses[$ww->course], $ww) ;  // push wwassignment onto an exisiting one
-        	}
-        }
-        	
-    }
-
- 
-    // $courses now holds a list of courses with wwassignment modules
-    $moduleid = _wwassignment_cmid();
-    $cids = array_keys($courses);   # collect course ids
-//    error_log("cids".print_r($cids, true));
-    $wwclient = new wwassignment_client();
-    foreach ($cids as $cid) {
-    // connect to WeBWorK
-	$wwcoursename = _wwassignment_mapped_course($cid,false); 
-	$wwassignment->webwork_course = $wwcoursename;
-	if ( $wwcoursename== -1) {
-//		error_log("Can't connect course $cid to webwork");
-		break;
-	}
-	// retrieve wwassignments associated with this course
-		foreach($courses[$cid] as $wwassignment ) {
- 		   //checking mappings
-			$wwsetname = $wwassignment->webwork_set;
-// 			error_log("updating events for $wwcoursename $wwsetname");
- 			//get data from WeBWorK
-			$wwsetdata = $wwclient->get_assignment_data($wwcoursename,$wwsetname,false);
-			$wwassignment->grade = $wwclient->get_max_grade($wwcoursename,$wwsetname,false);
-			$wwassignment->timemodified = time();
-			$returnid = $DB->update_record('wwassignment',$wwassignment);
-			// update event
-			//this part won't work because these items implicitly require the course.
-			_wwassignment_delete_events($wwassignment->id);
-			_wwassignment_create_events($wwassignment, $wwsetdata);
-		 }  
-	 
-	} 
-
-
-    return true;
+     global $DB;
+     traceLog("----------------- Begin wwassignment_refresh_events ---------------");
+     _wwassignment_refresh_events($courseid);
+     traceLog("----------------- End wwassignment_refresh_events ---------------");
 }
 
+     
+// 
+// // This standard function will check all instances of this module
+// // and make sure there are up-to-date events created for each of them.
+// // If courseid = 0, then every wwassignment event in the site is checked, else
+// // only wwassignment events belonging to the course specified are checked.
+// // This function is used, in its new format, by restore_refresh_events() and by the cron function
+// // 
+//     // find wwassignment instances associated with this course or all wwassignment modules
+//      $courses = array();  # create array of courses
+//     if ($courseid) {
+//         if (! $wwassignments = $DB->get_records("wwassignment", array("course"=>$courseid) )) {
+//             return true;
+//         } else {
+//         	$courses[$courseid]= array();      // collect wwassignments for this course
+//         	array_push( $courses[$courseid],   $wwassignments );  
+//         }
+//     } else {
+//         if (! $wwassignments = $DB->get_records("wwassignment")) {
+//             return true;
+//         } else {
+//         	foreach ($wwassignments as $ww ) {
+//         		// collect wwassignments for each course
+// //        		error_log("course id ".$ww->course);
+//         		if (! ($courses[$ww->course] ) ) {
+//         			$courses[$ww->course] = array();
+//         		}
+//         		array_push($courses[$ww->course], $ww) ;  // push wwassignment onto an exisiting one
+//         	}
+//         }
+//         	
+//     }
+// 
+//  
+//     // $courses now holds a list of courses with wwassignment modules
+//     $moduleid = _wwassignment_cmid();
+//     $cids = array_keys($courses);   # collect course ids
+// //    error_log("cids".print_r($cids, true));
+//     $wwclient = new wwassignment_client();
+//     foreach ($cids as $cid) {
+//     // connect to WeBWorK
+// 	$wwcoursename = _wwassignment_mapped_course($cid,false); 
+// 	$wwassignment->webwork_course = $wwcoursename;
+// 	if ( $wwcoursename== -1) {
+// //		error_log("Can't connect course $cid to webwork");
+// 		break;
+// 	}
+// 	// retrieve wwassignments associated with this course
+// 		foreach($courses[$cid] as $wwassignment ) {
+//  		   //checking mappings
+// 			$wwsetname = $wwassignment->webwork_set;
+// // 			error_log("updating events for $wwcoursename $wwsetname");
+//  			//get data from WeBWorK
+// 			$wwsetdata = $wwclient->get_assignment_data($wwcoursename,$wwsetname,false);
+// 			$wwassignment->grade = $wwclient->get_max_grade($wwcoursename,$wwsetname,false);
+// 			$wwassignment->timemodified = time();
+// 			$returnid = $DB->update_record('wwassignment',$wwassignment);
+// 			// update event
+// 			//this part won't work because these items implicitly require the course.
+// 			_wwassignment_delete_events($wwassignment->id);
+// 			_wwassignment_create_events($wwassignment, $wwsetdata);
+// 		 }  
+// 	 
+// 	} 
+//     traceLog("----------------- End wwassignment_refresh_events ---------------");
+// 
+//     return true;
+// }
 
+///////////////////////////////////////////////////////////////////////////////////////
 // High level grade calls ins gradelib.php
+///////////////////////////////////////////////////////////////////////////////////////
 
-/**
+/** A. 
  * Returns grading information for given activity - optionally with users grades
  * Manual, course or category items can not be queried.
  * @public
@@ -685,10 +700,10 @@ function wwassignment_refresh_events($courseid = 0) {
  * @return array of grade information objects (scaleid, name, grade and locked status, etc.) indexed with itemnumbers
  */
  
-// function grade_get_grades($courseid, $itemtype, $itemmodule, $iteminstance, $userid_or_ids=null) {
+// A. function grade_get_grades($courseid, $itemtype, $itemmodule, $iteminstance, $userid_or_ids=null) {
  
  
- /**
+ /** B.
  * Submit new or update grade; update/create grade_item definition. Grade must have userid specified,
  * rawgrade and feedback with format are optional. rawgrade NULL means 'Not graded', missing property
  * or key means do not change existing.
@@ -707,15 +722,19 @@ function wwassignment_refresh_events($courseid = 0) {
  * @param mixed $grades grade (object, array) or several grades (arrays of arrays or objects), NULL if updating grade_item definition only
  * @param mixed $itemdetails object or array describing the grading item, NULL if no change
  */
-// function grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, $itemnumber, $grades=NULL, $itemdetails=NULL) {
+ 
+/** 
+*   B. function grade_update($source, $courseid, $itemtype, $itemmodule, $iteminstance, 
+*        $itemnumber, $grades=NULL, $itemdetails=NULL) {}
 
-/**
- * Refetches data from all course activities
- * @param int $courseid
- * @param string $modname
- * @return success
- */
-// function grade_grab_course_grades($courseid, $modname=null) {
+/**  C.
+* Refetches data from all course activities
+* @param int $courseid
+* @param string $modname
+* @return success
+*   C. function grade_grab_course_grades($courseid, $modname=null) {}
+*/
+///////////////////////////////////////////////////////////////////////////////////////
 
 function wwassignment_supports($feature) {
     switch($feature) {
@@ -727,7 +746,7 @@ function wwassignment_supports($feature) {
 
 
 /**
- * Given a coursemodule object, this function returns the extra
+ * Given a coursemodule object, `wwassignment_get_coursemodule_info` function returns the extra
  * information needed to print this activity in various places.
  *
  * If folder needs to be displayed inline we store additional information

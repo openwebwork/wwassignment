@@ -1,6 +1,6 @@
 <?php
 global $CFG, $DB;
-require_once("locallib.php");
+require_once(dirname(__FILE__) . "/locallib.php");
 
 // debug switch defined in locallib.php  define('WWASSIGNMENT_DEBUG',0);
 
@@ -91,7 +91,6 @@ function wwassignment_add_instance($wwassignment) {
 */
 function wwassignment_update_instance($wwassignment) {
     global $COURSE,$DB;
-    require_once("locallib.php");
     traceLog("---------Begin wwassignment_update_instance---------");
     
 
@@ -185,8 +184,6 @@ function wwassignment_get_user_grades($wwassignment,$userid=0) {
 	traceLog("------Begin wwassignment_get_user_grades -- fetch grades from WW -----");
 	debugLog("inputs -- wwassignment" . print_r($wwassignment,true));
 	debugLog("userid = $userid");
-	
-	require_once("locallib.php");
 	
 	//checking mappings
 	$courseid = $wwassignment->course;

@@ -1,6 +1,6 @@
 <?php
-require_once('moodleform_mod.php');
-require_once('locallib.php');
+require_once("$CFG->dirroot/course/moodleform_mod.php");
+require_once(dirname(__FILE__) . "locallib.php");
 
 class mod_wwassignment_mod_form extends moodleform_mod
 {

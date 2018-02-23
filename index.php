@@ -3,8 +3,8 @@
 * @desc This page lists all the instances of wwassignments within a particular course.
 */
 
-require_once("../../config.php");
-require_once("locallib.php");
+require_once(dirname(__FILE__) . "/../../config.php");
+require_once(dirname(__FILE__) . "/locallib.php");
 
 // global database object
 global $DB,$OUTPUT,$PAGE;

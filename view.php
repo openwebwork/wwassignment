@@ -7,8 +7,8 @@
 // global database object
 global $DB,$OUTPUT,$PAGE;
 
-require_once("../../config.php");
-require_once("locallib.php");
+require_once(dirname(__FILE__) . "/../../config.php");
+require_once(dirname(__FILE__) . "/locallib.php");
 
 
 

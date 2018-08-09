@@ -66,7 +66,7 @@ $PAGE->set_title("$course->shortname: $wwassignment->name");
 $PAGE->set_cacheable(true);
 $PAGE->set_focuscontrol("");
 //$PAGE->set_button(update_module_button($cm->id, $course->id, $strwwassignment));
-$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'wwassignment'));
+//$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'wwassignment'));
 //$PAGE->navbar->add($strwwassignments,"index.php?id=$course->id");
 //$PAGE->navbar->add($wwassignment->name);
 

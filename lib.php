@@ -508,25 +508,6 @@ function wwassignment_print_recent_activity($course, $isteacher, $timestart) {
         return false;  //  True if anything was printed, otherwise false 
 }
 
-/**
-* @desc Function that is run by the cron job. This makes sure that 
-* the grades and all other data are pulled from webwork.
-* returns true if successful
-*/
-function wwassignment_cron() {	
-    traceLog("-------------Begin wwassignment_cron-------------------------");
-
-    //FIXME: Add a call that updates all events with dates (in case people forgot to push)
-    //wwassignment_refresh_events();
-    //FIXME: Add a call that updates all grades in all courses
-    //wwassignment_update_grades(null,0); 
-   //try {    // try didn't work on some php systems -- leave it out.
-    	 _wwassignment_update_dirty_sets();
-    traceLog("---------------------End wwassignment_cron------------------------");
-    return true;
-}
-
-
 // reference material for improving update dirty sets:
 //  from wiki/lib /print_recent_activity 
 //  $sql = "SELECT l.*, cm.instance FROM {$CFG->prefix}log l 

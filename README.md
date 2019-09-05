@@ -9,6 +9,11 @@ update cron job.  The change was required to conform to the new way in which act
 2. Sept 5, 2019: This still works with Moodle 3.3.4 (for example https://demo.webwork.rochester.edu/moodle) but the wwassignment module may require further updates to work with Moodle 3.5 and later. 
 3. Connecting WeBWorK to Moodle using LTI is also possible (follow the same directions as connecting WeBWorK to Canvas, Blackboard, D2L and so forth. LTI has the automatic single sign-on capabilities of wwassignment but LTI-1.2 does not have the bandwidth to transmit all homework information back to the gradebook. 
 
+http://webwork.maa.org/wiki/LTI-Advanced_Authentication
+
+http://webwork.maa.org/wiki/LTI-Advanced_Grading (limited grade passback)
+
+
 ## Moodle WeBWorK assignment activity module
 
 **wwassignment** and **wwlink** provide a reliable method of presenting introductory and 

@@ -61,8 +61,7 @@ class mod_wwassignment_mod_form extends moodleform_mod
         // $OUTPUT->help_icon('enablenotification','assignment');
         $mform->addHelpButton('webwork_set', 'webwork_set', 'wwassignment');
 
-        // Instead of the wwassign description, we should use the normal intro...
-        $this->add_intro_editor($config->requiremodintro);
+        $this->standard_intro_elements();
 
         $features = new stdClass;
         $features->gradecat = true;

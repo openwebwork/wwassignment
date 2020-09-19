@@ -661,7 +661,7 @@ class wwassignment_client {
         /**
          * @desc Constructs a singleton webwork_client.
          */
-        function wwassignment_client()
+        function __construct()
         {
             global $CFG;
             // static associative array containing the real objects, key is classname

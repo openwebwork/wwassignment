@@ -78,3 +78,4 @@ $string['rpc_error'] = 'Communication error between the Moodle client and WeBWor
 $string['writing'] = 'WWASSIGN:writing';
 $string['writing_help'] = 'WWASSIGN:writing_help';
 
+$string['updatedirtysets'] = 'Synchronise grades from WebWorK';
